@@ -507,15 +507,17 @@ body.modal-open .case-backdrop a {
   top: 100%;
   left: 50%;
   margin-top: 1.7rem;
-  font-family: var(--font-mono);
-  font-size: 0.76rem;
-  letter-spacing: 0.02em;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.86rem;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   text-align: center;
   pointer-events: none;
 }
 
 .category-item__meta-line {
+  opacity: 0.78;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
 }
 
@@ -668,6 +670,37 @@ body.modal-open .case-backdrop a {
 .modal-list__meta {
   color: var(--text-dim);
   font-size: 0.72rem;
+}
+
+.modal-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  margin-top: 1.2rem;
+}
+
+.modal-timeline__row {
+  display: flex;
+  align-items: baseline;
+  gap: 1.1rem;
+}
+
+.modal-timeline__year {
+  flex: 0 0 auto;
+  min-width: 3.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--purple-light);
+  opacity: 0.85;
+}
+
+.modal-timeline__text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: rgba(238, 233, 244, 0.82);
 }
 
 .modal-quotes {

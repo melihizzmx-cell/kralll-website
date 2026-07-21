@@ -99,9 +99,12 @@ export default function App() {
       setActiveSection("hakkimda")
     } else if (category.id === "ai-lab") {
       setActiveSection("ai-arsiv")
+    } else {
+      // Motion / Image Direction / Playground: henüz gerçek içerikleri
+      // yok, mevcut SectionPanel üzerinden "Still taking shape." durumu
+      // gösteriliyor (bkz. src/data/sections.js).
+      setActiveSection(category.id)
     }
-    // Motion / Image Direction / Playground: henüz bir hedefi yok,
-    // bulutta atmosferik giriş noktası olarak kalıyor.
   }
 
   return (
