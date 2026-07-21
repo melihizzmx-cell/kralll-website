@@ -156,6 +156,64 @@ npm run build
 
 Bu komut `dist` adında bir klasör oluşturur, o klasörün içeriği herhangi
 bir statik hosting servisine (Vercel, Netlify, GitHub Pages vb.) yüklenebilir.
+Yerel olarak bu üretim sürümünü tarayıcıda test etmek istersen:
+
+```
+npm run preview
+```
+
+---
+
+## Vercel'e deploy etme
+
+Proje standart bir Vite + React uygulaması olduğu için Vercel'de ekstra
+bir yapılandırma dosyasına (`vercel.json` vb.) ihtiyaç yok — Vercel,
+`package.json` içindeki `vite build` komutunu ve `dist` çıktı klasörünü
+otomatik olarak tanır.
+
+### Yöntem 1: Vercel web arayüzünden (en kolay)
+
+1. Projeyi bir GitHub reposuna push'la (zaten bu repo).
+2. [https://vercel.com](https://vercel.com) adresine git ve GitHub hesabınla
+   giriş yap.
+3. **Add New → Project** de, bu repoyu seç.
+4. Vercel "Framework Preset" olarak otomatik **Vite** algılayacak:
+   - Build Command: `vite build` (veya `npm run build`)
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+   Bu alanları değiştirmene gerek yok, varsayılanlar doğru.
+5. **Deploy** butonuna tıkla. Birkaç dakika içinde canlı bir URL alırsın
+   (örn. `kralll-website.vercel.app`).
+6. Bundan sonra `main` (veya deploy için seçtiğin branch) üzerine her
+   push yaptığında Vercel otomatik olarak yeniden deploy eder. Diğer
+   branch'lere yapılan push'lar için de otomatik "Preview" linkleri üretir.
+
+### Yöntem 2: Vercel CLI ile terminalden
+
+```
+npm install -g vercel
+vercel login
+vercel
+```
+
+İlk çalıştırmada birkaç soru sorar (proje adı, ayarları onaylama vb.),
+varsayılan cevaplarla ilerleyebilirsin. Test için önizleme linki üretir;
+gerçek (production) domain'e deploy etmek için:
+
+```
+vercel --prod
+```
+
+### Notlar
+
+- `node_modules` ve `dist` klasörleri `.gitignore` içinde olduğu için repoya
+  dahil değil — Vercel bunları kendi sunucusunda `npm install` ve
+  `npm run build` çalıştırarak sıfırdan üretir.
+- Site tek sayfalık (SPA) ama herhangi bir client-side routing kütüphanesi
+  kullanmıyor (tüm gezinme modal/panel açıp kapamakla çalışıyor), bu yüzden
+  ekstra bir "SPA rewrite" kuralına ihtiyaç yok.
+- Google Fonts (Caveat, IBM Plex Mono) `index.html` içinden CDN üzerinden
+  yükleniyor; Vercel tarafında ek bir ayar gerektirmiyor.
 
 ---
 
