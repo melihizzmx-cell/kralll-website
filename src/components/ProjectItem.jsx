@@ -12,7 +12,17 @@ const sizeFont = {
   xlarge: "clamp(2.5rem, 5vw, 4rem)",
 }
 
-const handWeights = [500, 600, 700]
+const handVariants = [
+  { fontFamily: "'Caveat', cursive", fontWeight: 600, fontStyle: "normal" },
+  { fontFamily: "'Caveat', cursive", fontWeight: 700, fontStyle: "normal" },
+  { fontFamily: "'Caveat', cursive", fontWeight: 500, fontStyle: "normal" },
+]
+
+const serifVariants = [
+  { fontFamily: "'Fraunces', serif", fontWeight: 500, fontStyle: "normal" },
+  { fontFamily: "'Fraunces', serif", fontWeight: 400, fontStyle: "italic" },
+  { fontFamily: "'Fraunces', serif", fontWeight: 600, fontStyle: "normal" },
+]
 
 export default function ProjectItem({ project, index, onSelect, revealed }) {
   const btnRef = useRef(null)
@@ -46,7 +56,7 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
   const proximity = useTransform(distance, [0, PROXIMITY_RADIUS], [1, 0], {
     clamp: true,
   })
-  const opacity = useTransform(proximity, [0, 1], [0.035, 1])
+  const opacity = useTransform(proximity, [0, 1], [0.09, 1])
   const scale = useTransform(proximity, [0, 1], [1, 1.08])
   const glowSize = useTransform(proximity, [0, 1], [0, 16])
   const textShadow = useTransform(
@@ -59,6 +69,9 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
     project.brand && project.brand !== project.title
       ? `${project.brand} · ${project.year} · ${project.role}`
       : `${project.year} · ${project.role}`
+
+  const variants = project.style === "serif" ? serifVariants : handVariants
+  const variant = variants[index % variants.length]
 
   return (
     <motion.div
@@ -85,7 +98,9 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
           scale,
           rotate: project.rotation,
           fontSize: sizeFont[project.size],
-          fontWeight: handWeights[index % handWeights.length],
+          fontFamily: variant.fontFamily,
+          fontWeight: variant.fontWeight,
+          fontStyle: variant.fontStyle,
           textShadow,
         }}
         onClick={() => onSelect(project)}

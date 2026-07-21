@@ -1,9 +1,11 @@
 // Proje evreni burada yönetilir. Yeni bir fikir eklemek için
 // aşağıdaki listeye yeni bir obje eklemen yeterli.
 //
-// x / y   : ekrana göre yüzde konumu (0-100)
-// rotation: derece cinsinden hafif eğim
-// size    : "small" | "medium" | "large" | "xlarge"
+// x / y     : ekrana göre yüzde konumu (0-100)
+// rotation  : derece cinsinden hafif eğim
+// size      : "small" | "medium" | "large" | "xlarge"
+// style     : "serif" (marka/müşteri işleri) | "hand" (kişisel/deneysel işler)
+// insight / idea / execution : proje modalındaki kısa case-study notları
 
 export const projects = [
   {
@@ -13,10 +15,16 @@ export const projects = [
     year: "2026",
     brand: "TurkNet",
     role: "Art Direction",
-    x: 36,
-    y: 21,
-    rotation: -7,
+    x: 34,
+    y: 19,
+    rotation: -6,
     size: "large",
+    style: "serif",
+    insight:
+      "Rakiplerin hepsi aynı anda her şeyi vaat ediyordu; kullanıcı hangi sözün gerçek olduğunu ayırt edemiyordu.",
+    idea: "Tek bir vaade odaklanan, gürültüyü kesen sakin bir marka sesi kurmak.",
+    execution:
+      "Kampanya dili, arayüz tonu ve görsel sistem aynı tek cümle etrafında sadeleştirildi.",
   },
   {
     id: "ultrand",
@@ -25,10 +33,15 @@ export const projects = [
     year: "2025",
     brand: "Ultrand",
     role: "Brand & Motion",
-    x: 73,
-    y: 13,
+    x: 54,
+    y: 12,
     rotation: 4,
     size: "small",
+    style: "serif",
+    insight: "Marka büyüdükçe kimliği farklı ellerde farklı şekillere giriyordu.",
+    idea: "Esnek ama kendi kendini koruyan, hareket hâlinde de tutarlı kalan bir sistem tasarlamak.",
+    execution:
+      "Logotip, renk ve hareket kuralları tek bir motion-first sistemde birleştirildi.",
   },
   {
     id: "pidem",
@@ -37,10 +50,16 @@ export const projects = [
     year: "2025",
     brand: "Pidem",
     role: "UI Direction",
-    x: 16,
-    y: 39,
+    x: 17,
+    y: 35,
     rotation: 6,
     size: "xlarge",
+    style: "serif",
+    insight:
+      "Ürün güçlüydü ama arayüz bunu hissettirmiyordu; her ekran birbirinden kopuk duruyordu.",
+    idea: "Ürünün kendi mantığını arayüze de taşıyan, sakin ve kendinden emin bir sistem kurmak.",
+    execution:
+      "Bileşen kütüphanesi ve etkileşim dili baştan kuruldu, ekranlar arası ritim yeniden yazıldı.",
   },
   {
     id: "ai-denemeleri",
@@ -49,10 +68,14 @@ export const projects = [
     year: "2026",
     brand: "Kişisel",
     role: "Araştırma",
-    x: 75,
-    y: 33,
+    x: 70,
+    y: 31,
     rotation: -5,
     size: "medium",
+    style: "hand",
+    insight: "Üretken araçlar hızlı sonuç veriyordu ama kendi sesimi kaybetme riski hep vardı.",
+    idea: "AI'ı bir sonuç makinesi değil, taslak/sketch ortağı gibi kullanmak.",
+    execution: "Prompt, seçim ve düzeltme döngüsü küçük, tekrar eden denemelerle test ediliyor.",
   },
   {
     id: "kisisel-isler",
@@ -61,10 +84,14 @@ export const projects = [
     year: "2024–2026",
     brand: "Kişisel",
     role: "Yön & Uygulama",
-    x: 44,
-    y: 57,
-    rotation: -3,
+    x: 27,
+    y: 56,
+    rotation: -4,
     size: "large",
+    style: "hand",
+    insight: "Müşteri işleri arasında kendi fikirlerimi biriktirecek bir yer yoktu.",
+    idea: "Küçük, bitmemiş olsa bile sahiplenilen işler için kalıcı bir alan açmak.",
+    execution: "Her biri farklı ölçekte, farklı zamanda; ortak paydası sadece dürüstlük.",
   },
   {
     id: "cekim-referanslari",
@@ -73,10 +100,14 @@ export const projects = [
     year: "2025",
     brand: "Arşiv",
     role: "Kürasyon",
-    x: 9,
-    y: 70,
-    rotation: 8,
+    x: 11,
+    y: 67,
+    rotation: 7,
     size: "small",
+    style: "hand",
+    insight: "Referans aramak, her seferinde sıfırdan başlayan dağınık bir süreçti.",
+    idea: "Tekrar dönülebilecek, zamanla büyüyen kişisel bir görsel dil arşivi kurmak.",
+    execution: "Kadraj, ışık ve renk üzerinden düzenli olarak güncellenen bir koleksiyon.",
   },
   {
     id: "kampanya-fikirleri",
@@ -85,10 +116,14 @@ export const projects = [
     year: "2025–2026",
     brand: "Arşiv",
     role: "Konsept Geliştirme",
-    x: 66,
-    y: 75,
+    x: 60,
+    y: 52,
     rotation: -8,
     size: "medium",
+    style: "hand",
+    insight: "En iyi fikirler genelde brief'ten önce, rastgele anlarda geliyordu.",
+    idea: "Bu anları kaybetmeden, ham hâlleriyle bir havuzda tutmak.",
+    execution: "Her biri tek cümlelik bir tohum; bir kısmı büyüyor, çoğu burada bekliyor.",
   },
   {
     id: "sosyal-medya-fikirleri",
@@ -97,9 +132,13 @@ export const projects = [
     year: "2026",
     brand: "Arşiv",
     role: "İçerik Yönü",
-    x: 53,
-    y: 88,
-    rotation: 5,
+    x: 76,
+    y: 68,
+    rotation: 4,
     size: "small",
+    style: "hand",
+    insight: "Format hızlı tüketiliyor ama fikir çoğu zaman hızla eskiyordu.",
+    idea: "Formattan bağımsız, zamana dayanıklı küçük içerik fikirleri biriktirmek.",
+    execution: "Notlar; başlık, ton ve görsel yön olarak üçe ayrılıyor.",
   },
 ]

@@ -212,8 +212,9 @@ vercel --prod
 - Site tek sayfalık (SPA) ama herhangi bir client-side routing kütüphanesi
   kullanmıyor (tüm gezinme modal/panel açıp kapamakla çalışıyor), bu yüzden
   ekstra bir "SPA rewrite" kuralına ihtiyaç yok.
-- Google Fonts (Caveat, IBM Plex Mono) `index.html` içinden CDN üzerinden
-  yükleniyor; Vercel tarafında ek bir ayar gerektirmiyor.
+- Fontlar (Caveat, Fraunces, IBM Plex Mono) `src/assets/fonts/` altında
+  yerel olarak barındırılıyor; harici bir font CDN'ine bağımlılık yok,
+  Vercel tarafında ek bir ayar gerektirmiyor.
 
 ---
 

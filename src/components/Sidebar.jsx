@@ -52,7 +52,7 @@ export default function Sidebar({ activeSection, onSelectSection, revealed }) {
         className="sidebar"
         initial={{ opacity: 0 }}
         animate={{
-          opacity: revealed ? (hovered || isMobile ? 0.95 : 0.5) : 0,
+          opacity: revealed ? (hovered || isMobile ? 1 : 0.7) : 0,
           x: isMobile ? (mobileOpen ? 0 : -300) : 0,
         }}
         transition={{

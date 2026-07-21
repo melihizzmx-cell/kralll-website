@@ -95,9 +95,8 @@ export default function App() {
           transition={{ duration: 1.2, delay: hasMoved ? 0.2 : 0, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="hud-line">
-            <span className="hud-dot" /> system online
+            <span className="hud-dot" /> archive open
           </span>
-          <span className="hud-line hud-line--dim">focus mode active</span>
         </motion.footer>
 
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
