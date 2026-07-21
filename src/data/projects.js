@@ -1,0 +1,182 @@
+// Proje evreni burada yönetilir. Yeni bir fikir eklemek için
+// aşağıdaki listeye yeni bir obje eklemen yeterli.
+//
+// x / y     : ekrana göre yüzde konumu (0-100)
+// rotation  : derece cinsinden hafif eğim
+// size      : "small" | "medium" | "large" | "xlarge"
+// style     : "serif" (marka/müşteri işleri) | "hand" (kişisel/deneysel işler)
+// insight / idea / execution : proje modalındaki kısa case-study notları
+//
+// caseStudy : true ise proje, ProjectModal içinde tam kapsamlı editoryal
+// case study şablonuyla açılır (hero + problem + içgörü + fikir + çıktılar
+// + rol + sonraki proje). Bu alan yoksa proje eski/kompakt modal ile açılır.
+// Gerçek görsel/video materyali henüz yoksa `outputs` altındaki her
+// bölüm otomatik olarak "content needed" etiketiyle boş gösterilir —
+// buraya sahte/placeholder görsel eklenmemeli.
+
+export const projects = [
+  {
+    id: "turknet",
+    title: "TurkNet",
+    subtitle: "Çok Odaklı İnternet",
+    year: "2026",
+    brand: "TurkNet",
+    role: "Art Direction",
+    x: 34,
+    y: 19,
+    rotation: -6,
+    size: "large",
+    style: "serif",
+    caseStudy: true,
+    problem:
+      "TurkNet, kalabalık bir pazarda konuşan ama duyulmayan bir markaya dönüşmüştü; herkes aynı anda hız, fiyat ve kapsama alanı vaat ediyor, hiçbiri öne çıkamıyordu.",
+    insight:
+      "Rakiplerin hepsi aynı anda her şeyi vaat ediyordu; kullanıcı hangi sözün gerçek olduğunu ayırt edemiyordu.",
+    idea: "Tek bir vaade odaklanan, gürültüyü kesen sakin bir marka sesi kurmak.",
+    execution:
+      "Kampanya dili, arayüz tonu ve görsel sistem aynı tek cümle etrafında sadeleştirildi.",
+    outputs: [
+      {
+        type: "Film",
+        aspect: "16 / 9",
+        description:
+          "Marka filmi, 'çok odaklı' fikrini tek bir sahnede özetleyen sakin bir açılış sekansı üzerine kuruldu.",
+      },
+      {
+        type: "Anahtar Görsel (KV)",
+        aspect: "4 / 5",
+        description:
+          "Kampanyanın anahtar görseli, sade bir kompozisyonla tek bir mesaja odaklanmayı görselleştirdi.",
+      },
+      {
+        type: "OOH",
+        aspect: "21 / 9",
+        description:
+          "Şehir içi mecralarda, tek cümlelik bir vaat dışında hiçbir şey taşımayan bir dış mekân uygulaması tasarlandı.",
+      },
+      {
+        type: "Sosyal Medya",
+        aspect: "1 / 1",
+        description:
+          "Sosyal içerikler, kampanyanın ana tonunu koruyarak platform bazlı kısa varyasyonlara ayrıldı.",
+      },
+    ],
+    roleDetail:
+      "Bu projede art direction'ı üstlendim: marka dilinin kampanya, arayüz ve görsel sistem genelinde tek bir tona indirgenmesinden sorumluydum.",
+  },
+  {
+    id: "ultrand",
+    title: "Ultrand",
+    subtitle: "Marka Kimliği Sistemi",
+    year: "2025",
+    brand: "Ultrand",
+    role: "Brand & Motion",
+    x: 54,
+    y: 12,
+    rotation: 4,
+    size: "small",
+    style: "serif",
+    insight: "Marka büyüdükçe kimliği farklı ellerde farklı şekillere giriyordu.",
+    idea: "Esnek ama kendi kendini koruyan, hareket hâlinde de tutarlı kalan bir sistem tasarlamak.",
+    execution:
+      "Logotip, renk ve hareket kuralları tek bir motion-first sistemde birleştirildi.",
+  },
+  {
+    id: "pidem",
+    title: "Pidem",
+    subtitle: "Dijital Ürün Deneyimi",
+    year: "2025",
+    brand: "Pidem",
+    role: "UI Direction",
+    x: 17,
+    y: 35,
+    rotation: 6,
+    size: "xlarge",
+    style: "serif",
+    insight:
+      "Ürün güçlüydü ama arayüz bunu hissettirmiyordu; her ekran birbirinden kopuk duruyordu.",
+    idea: "Ürünün kendi mantığını arayüze de taşıyan, sakin ve kendinden emin bir sistem kurmak.",
+    execution:
+      "Bileşen kütüphanesi ve etkileşim dili baştan kuruldu, ekranlar arası ritim yeniden yazıldı.",
+  },
+  {
+    id: "ai-denemeleri",
+    title: "AI Denemeleri",
+    subtitle: "Üretken Görsel Testleri",
+    year: "2026",
+    brand: "Kişisel",
+    role: "Araştırma",
+    x: 70,
+    y: 31,
+    rotation: -5,
+    size: "medium",
+    style: "hand",
+    insight: "Üretken araçlar hızlı sonuç veriyordu ama kendi sesimi kaybetme riski hep vardı.",
+    idea: "AI'ı bir sonuç makinesi değil, taslak/sketch ortağı gibi kullanmak.",
+    execution: "Prompt, seçim ve düzeltme döngüsü küçük, tekrar eden denemelerle test ediliyor.",
+  },
+  {
+    id: "kisisel-isler",
+    title: "Kişisel İşler",
+    subtitle: "Sahiplenilen Küçük Fikirler",
+    year: "2024–2026",
+    brand: "Kişisel",
+    role: "Yön & Uygulama",
+    x: 27,
+    y: 56,
+    rotation: -4,
+    size: "large",
+    style: "hand",
+    insight: "Müşteri işleri arasında kendi fikirlerimi biriktirecek bir yer yoktu.",
+    idea: "Küçük, bitmemiş olsa bile sahiplenilen işler için kalıcı bir alan açmak.",
+    execution: "Her biri farklı ölçekte, farklı zamanda; ortak paydası sadece dürüstlük.",
+  },
+  {
+    id: "cekim-referanslari",
+    title: "Çekim Referansları",
+    subtitle: "Görsel Dil Arşivi",
+    year: "2025",
+    brand: "Arşiv",
+    role: "Kürasyon",
+    x: 11,
+    y: 67,
+    rotation: 7,
+    size: "small",
+    style: "hand",
+    insight: "Referans aramak, her seferinde sıfırdan başlayan dağınık bir süreçti.",
+    idea: "Tekrar dönülebilecek, zamanla büyüyen kişisel bir görsel dil arşivi kurmak.",
+    execution: "Kadraj, ışık ve renk üzerinden düzenli olarak güncellenen bir koleksiyon.",
+  },
+  {
+    id: "kampanya-fikirleri",
+    title: "Kampanya Fikirleri",
+    subtitle: "Konsept Havuzu",
+    year: "2025–2026",
+    brand: "Arşiv",
+    role: "Konsept Geliştirme",
+    x: 60,
+    y: 52,
+    rotation: -8,
+    size: "medium",
+    style: "hand",
+    insight: "En iyi fikirler genelde brief'ten önce, rastgele anlarda geliyordu.",
+    idea: "Bu anları kaybetmeden, ham hâlleriyle bir havuzda tutmak.",
+    execution: "Her biri tek cümlelik bir tohum; bir kısmı büyüyor, çoğu burada bekliyor.",
+  },
+  {
+    id: "sosyal-medya-fikirleri",
+    title: "Sosyal Medya Fikirleri",
+    subtitle: "İçerik Konsept Notları",
+    year: "2026",
+    brand: "Arşiv",
+    role: "İçerik Yönü",
+    x: 76,
+    y: 68,
+    rotation: 4,
+    size: "small",
+    style: "hand",
+    insight: "Format hızlı tüketiliyor ama fikir çoğu zaman hızla eskiyordu.",
+    idea: "Formattan bağımsız, zamana dayanıklı küçük içerik fikirleri biriktirmek.",
+    execution: "Notlar; başlık, ton ve görsel yön olarak üçe ayrılıyor.",
+  },
+]
