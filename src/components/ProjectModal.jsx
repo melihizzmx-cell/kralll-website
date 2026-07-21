@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { AnimatePresence, motion } from "framer-motion"
+import { useCaseVideoAutoplay } from "../lib/useCaseVideoAutoplay"
 import { ArrowRight, X } from "lucide-react"
 import { projects } from "../data/projects"
 import {
@@ -111,6 +112,8 @@ export default function ProjectModal({ project, onClose, onNavigate }) {
 
 // Kategori bulutunda odaklanan proje adıyla hero başlığını görsel olarak
 // bağlayan ortak bileşen. Tüm case study türleri aynısını kullanır.
+// campaignTitle varsa (örn. gerçek bir kampanya adı) title yerine onu
+// gösterir; yoksa mevcut davranış (project.title) hiç değişmez.
 function HeroTitle({ project, font, reduced }) {
   return (
     <motion.h2
@@ -120,7 +123,7 @@ function HeroTitle({ project, font, reduced }) {
       initial="initial"
       animate="animate"
     >
-      {project.title}
+      {project.campaignTitle ?? project.title}
       {!reduced && (
         <motion.span
           className="study-title__glow"
@@ -134,6 +137,24 @@ function HeroTitle({ project, font, reduced }) {
   )
 }
 
+// Full ve Compact case study'nin paylaştığı masthead — marka, başlık,
+// alt satır ve meta. İkisi arasında birebir aynıydı, tekrarı kaldırmak
+// için ortak bileşene taşındı.
+function CaseHeader({ project, font, reduced }) {
+  return (
+    <div className="study-header">
+      <span className="case-eyebrow">{project.brand}</span>
+      <HeroTitle project={project} font={font} reduced={reduced} />
+      {project.subtitle && <p className="case-subtitle">{project.subtitle}</p>}
+      <div className="case-meta">
+        <span>{project.year}</span>
+        <span className="case-meta-dot">·</span>
+        <span>{project.role}</span>
+      </div>
+    </div>
+  )
+}
+
 function ContentNeeded({ label, aspect }) {
   return (
     <div className="study-empty" style={aspect ? { aspectRatio: aspect } : undefined}>
@@ -143,59 +164,159 @@ function ContentNeeded({ label, aspect }) {
   )
 }
 
+function CaseVideo({ src, poster }) {
+  const videoRef = useCaseVideoAutoplay()
+  return (
+    <div className="study-video">
+      <video
+        ref={videoRef}
+        className="study-video__el"
+        src={src}
+        poster={poster}
+        muted
+        loop
+        playsInline
+        controls
+        preload="none"
+      />
+    </div>
+  )
+}
+
 function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
+  const { media } = project
+
   return (
     <>
-      <div className="study-hero">
-        <ContentNeeded label="Hero Görsel / Video" />
+      <div className="study-hero study-hero--media">
+        <picture>
+          <source media="(max-width: 720px)" srcSet={media.heroMobile} />
+          <img
+            className="study-hero__image"
+            src={media.heroDesktop}
+            alt={`${project.campaignTitle ?? project.title} — kampanya anahtar görseli`}
+            loading="eager"
+          />
+        </picture>
       </div>
 
-      <div className="study-header">
-        <span className="case-eyebrow">{project.brand}</span>
-        <HeroTitle project={project} font={font} reduced={reduced} />
-        <p className="case-subtitle">{project.subtitle}</p>
-        <div className="case-meta">
-          <span>{project.year}</span>
-          <span className="case-meta-dot">·</span>
-          <span>{project.role}</span>
+      <CaseHeader project={project} font={font} reduced={reduced} />
+
+      {/* 2. Campaign in One Sentence + My Role */}
+      <div className="study-body">
+        <div className="case-section case-section--flush">
+          <span className="case-section__label" lang="en">
+            The Campaign
+          </span>
+          <p className="case-section__text">{project.campaignSummary}</p>
+        </div>
+
+        <div className="case-section">
+          <span className="case-section__label" lang="en">
+            My Role
+          </span>
+          <p className="case-section__text">{project.myRole}</p>
+        </div>
+
+        {/* 3. Challenge & Insight */}
+        <div className="case-section">
+          <span className="case-section__label" lang="en">
+            Challenge
+          </span>
+          <p className="case-section__text">{project.challenge}</p>
+        </div>
+
+        <div className="case-section">
+          <span className="case-section__label" lang="en">
+            Insight
+          </span>
+          <p className="case-section__text">{project.insight}</p>
+        </div>
+      </div>
+
+      {/* 4. Big Idea */}
+      <div className="study-body">
+        <div className="case-section case-section--center">
+          <span className="case-section__label" lang="en">
+            Big Idea
+          </span>
+          <p className="case-statement">{project.bigIdea}</p>
+        </div>
+      </div>
+
+      {/* 5. Characters & Art Direction */}
+      <div className="study-body">
+        <div className="case-section case-section--flush">
+          <span className="case-section__label" lang="en">
+            Characters &amp; Art Direction
+          </span>
+          {project.charactersText.map((paragraph, i) => (
+            <p className="case-section__text" key={i}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </div>
+
+      <div className="study-outputs">
+        <div className="study-outputs__grid">
+          {media.art.map((src) => (
+            <div className="study-output" key={src}>
+              <img
+                src={src}
+                alt="TurkNet luchador karakter ve art direction detayı"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 6. Campaign Visuals & Messages */}
+      <div className="study-outputs">
+        <span className="study-outputs__label" lang="en">
+          Campaign Visuals
+        </span>
+        <div className="study-outputs__grid">
+          {media.campaignVisuals.map((src) => (
+            <div className="study-output" key={src}>
+              <img src={src} alt="TurkNet kampanya anahtar görseli" loading="lazy" />
+            </div>
+          ))}
         </div>
       </div>
 
       <div className="study-body">
         <div className="case-section case-section--flush">
-          <span className="case-section__label">Problem</span>
-          <p className="case-section__text">{project.problem}</p>
-        </div>
-
-        <div className="case-section">
-          <span className="case-section__label">Tüketici İçgörüsü</span>
-          <p className="case-section__text">{project.insight}</p>
-        </div>
-
-        <div className="case-section">
-          <span className="case-section__label">Ana Yaratıcı Fikir</span>
-          <p className="case-section__text">{project.idea}</p>
+          <span className="case-section__label" lang="en">
+            Messages
+          </span>
+          <ol className="case-messages">
+            {project.campaignMessages.map((message, i) => (
+              <li className="case-messages__item" key={message}>
+                <span className="case-messages__index">0{i + 1}</span>
+                {message}
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
 
-      {project.outputs?.length > 0 && (
-        <div className="study-outputs">
-          <span className="study-outputs__label">Çıktılar</span>
-          <div className="study-outputs__grid">
-            {project.outputs.map((output) => (
-              <div className="study-output" key={output.type}>
-                <ContentNeeded label={output.type} aspect={output.aspect} />
-                <p className="study-output__caption">{output.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* 7. Film / Motion */}
+      <div className="study-outputs">
+        <span className="study-outputs__label" lang="en">
+          Film / Motion
+        </span>
+        <CaseVideo src={media.film} poster={media.filmPoster} />
+      </div>
 
+      {/* 8. Extensions + Process */}
       <div className="study-body">
-        <div className="case-section">
-          <span className="case-section__label">Rolüm</span>
-          <p className="case-section__text">{project.roleDetail ?? project.role}</p>
+        <div className="case-section case-section--flush">
+          <span className="case-section__label" lang="en">
+            AI in the Process
+          </span>
+          <p className="case-section__text">{project.aiProcess}</p>
         </div>
       </div>
 
@@ -219,16 +340,7 @@ function CompactCaseStudy({ project, font, reduced }) {
         <ContentNeeded label="Görsel / Video Alanı" />
       </div>
 
-      <div className="study-header">
-        <span className="case-eyebrow">{project.brand}</span>
-        <HeroTitle project={project} font={font} reduced={reduced} />
-        <p className="case-subtitle">{project.subtitle}</p>
-        <div className="case-meta">
-          <span>{project.year}</span>
-          <span className="case-meta-dot">·</span>
-          <span>{project.role}</span>
-        </div>
-      </div>
+      <CaseHeader project={project} font={font} reduced={reduced} />
 
       <div className="study-body">
         <div className="case-section case-section--flush">

@@ -23,10 +23,11 @@ export const projects = [
   {
     id: "turknet",
     title: "TurkNet",
-    subtitle: "Çok Odaklı İnternet",
+    campaignTitle: "TurkNet'le Şov Başlasın",
+    subtitle: "Kampanya Dünyası",
     year: "2026",
     brand: "TurkNet",
-    role: "Art Direction",
+    role: "Creative Direction",
     x: 34,
     y: 19,
     rotation: -6,
@@ -34,41 +35,45 @@ export const projects = [
     style: "serif",
     accentColor: "#7C4DBF",
     caseStudy: true,
-    problem:
-      "TurkNet, kalabalık bir pazarda konuşan ama duyulmayan bir markaya dönüşmüştü; herkes aynı anda hız, fiyat ve kapsama alanı vaat ediyor, hiçbiri öne çıkamıyordu.",
+
+    campaignSummary:
+      "TurkNet'in internet faydalarını teknik anlatımın dışına çıkarıp, üç luchador karakteri üzerinden eğlenceli ve güçlü bir kampanya dünyasına dönüştürdük. Türk evinin tanıdık atmosferi, beklenmedik bir şov sahnesine dönüştü.",
+    myRole:
+      "Creative concept development, art direction, character and visual world development, AI-assisted image production, key visual development and motion exploration.",
+
+    challenge:
+      "İnternet kategorisinde hız, taahhütsüzlük ve simetrik bağlantı gibi güçlü faydalar çoğunlukla benzer ve teknik bir iletişim diliyle anlatılıyor. TurkNet'in ürün mesajlarını daha görünür, hatırlanabilir ve eğlenceli bir dünyaya taşımamız gerekiyordu.",
     insight:
-      "Rakiplerin hepsi aynı anda her şeyi vaat ediyordu; kullanıcı hangi sözün gerçek olduğunu ayırt edemiyordu.",
-    idea: "Tek bir vaade odaklanan, gürültüyü kesen sakin bir marka sesi kurmak.",
-    execution:
-      "Kampanya dili, arayüz tonu ve görsel sistem aynı tek cümle etrafında sadeleştirildi.",
-    outputs: [
-      {
-        type: "Film",
-        aspect: "16 / 9",
-        description:
-          "Marka filmi, 'çok odaklı' fikrini tek bir sahnede özetleyen sakin bir açılış sekansı üzerine kuruldu.",
-      },
-      {
-        type: "Anahtar Görsel (KV)",
-        aspect: "4 / 5",
-        description:
-          "Kampanyanın anahtar görseli, sade bir kompozisyonla tek bir mesaja odaklanmayı görselleştirdi.",
-      },
-      {
-        type: "OOH",
-        aspect: "21 / 9",
-        description:
-          "Şehir içi mecralarda, tek cümlelik bir vaat dışında hiçbir şey taşımayan bir dış mekân uygulaması tasarlandı.",
-      },
-      {
-        type: "Sosyal Medya",
-        aspect: "1 / 1",
-        description:
-          "Sosyal içerikler, kampanyanın ana tonunu koruyarak platform bazlı kısa varyasyonlara ayrıldı.",
-      },
+      "Teknik faydalar tek başına dikkat çekmeyebilir; ancak insanların günlük hayatına beklenmedik ve eğlenceli bir biçimde girdiğinde güçlü bir iletişim anına dönüşebilir.",
+    bigIdea:
+      "TurkNet'in güçlü internet faydalarını, evin içine giren üç luchadorun başlattığı büyük bir şova dönüştürmek: TurkNet'le Şov Başlasın.",
+
+    charactersText: [
+      "Üç luchador, TurkNet'in güçlü, özgür ve enerjik tavrını temsil eden kampanya karakterleri olarak tasarlandı. Meksikalı güreşçilerin gösterişli dünyasını tanıdık bir Türk evinin içine yerleştirmek, kampanyanın absürt mizahını ve görsel karşıtlığını oluşturdu.",
+      "TurkNet moru ana renk olarak korunurken kostümler, kemerler, ev objeleri ve geleneksel detaylar aynı görsel dünyanın parçaları hâline getirildi.",
     ],
-    roleDetail:
-      "Bu projede art direction'ı üstlendim: marka dilinin kampanya, arayüz ve görsel sistem genelinde tek bir tona indirgenmesinden sorumluydum.",
+
+    campaignMessages: [
+      "Taahhüt Yok",
+      "Cayma Bedeli Bizden",
+      "1.000 Mbps'ye Varan Hız",
+      "İndirme = Yükleme",
+    ],
+
+    aiProcess:
+      "AI; karakter, kostüm, poz, mekân ve kompozisyon alternatiflerini hızlı biçimde araştırmak için yaratıcı sürecin farklı aşamalarında kullanıldı. Seçilen yönler art direction sürecinde rafine edilerek KV, film ve hareketli içerik denemelerine dönüştürüldü.",
+
+    media: {
+      heroDesktop: "/case-studies/turknet/hero-desktop-web.webp",
+      heroMobile: "/case-studies/turknet/hero-mobile-web.webp",
+      art: ["/case-studies/turknet/art-01-web.webp"],
+      campaignVisuals: [
+        "/case-studies/turknet/kv-02-web.webp",
+        "/case-studies/turknet/kv-03-web.webp",
+      ],
+      film: "/case-studies/turknet/film-web.mp4",
+      filmPoster: "/case-studies/turknet/film-poster-web.webp",
+    },
   },
   {
     id: "ultrand",

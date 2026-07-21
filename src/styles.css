@@ -871,6 +871,26 @@ body.modal-open .case-backdrop a {
   margin: 0;
 }
 
+.case-section__text + .case-section__text {
+  margin-top: 1.1rem;
+}
+
+.case-statement {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.4rem, 3.2vw, 2.15rem);
+  line-height: 1.35;
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto;
+  color: var(--text-main);
+}
+
+.case-section--center {
+  text-align: center;
+}
+
 /* -------------------------------------------------------- */
 /* Full case study (TurkNet)                                  */
 /* -------------------------------------------------------- */
@@ -884,6 +904,22 @@ body.modal-open .case-backdrop a {
   padding: clamp(1.5rem, 6vw, 4.5rem);
   background: var(--bg);
   border-bottom: 1px solid rgba(238, 233, 244, 0.06);
+}
+
+.study-hero--media {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+
+.study-hero__image,
+.study-hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .study-empty {
@@ -1003,6 +1039,53 @@ body.modal-open .case-backdrop a {
   line-height: 1.65;
   color: rgba(238, 233, 244, 0.6);
   margin: 0;
+}
+
+.study-video {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.study-video__el {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 2px;
+  background: var(--bg);
+}
+
+.case-messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.case-messages__item {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: var(--text-main);
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(238, 233, 244, 0.08);
+}
+
+.case-messages__item:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.case-messages__index {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgb(var(--accent-r), var(--accent-g), var(--accent-b));
+  min-width: 1.4em;
 }
 
 .study-next {
@@ -1148,6 +1231,12 @@ body.modal-open .case-backdrop a {
   .study-hero {
     height: 46vh;
     min-height: 280px;
+  }
+
+  .study-hero--media {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 4 / 5;
   }
 
   .category-cloud {
