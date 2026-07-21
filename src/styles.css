@@ -409,6 +409,8 @@ body.modal-open .case-backdrop a {
   font-family: var(--font-hand);
   white-space: nowrap;
   transform-origin: center;
+  text-shadow: 0 0 var(--glow-blur, 0px)
+    rgba(var(--accent-r), var(--accent-g), var(--accent-b), var(--glow-opacity, 0));
 }
 
 .project-item::before {
@@ -425,8 +427,8 @@ body.modal-open .case-backdrop a {
   height: 1px;
   background: linear-gradient(
     to right,
-    var(--purple-light),
-    rgba(199, 132, 255, 0.2)
+    rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.95),
+    rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.2)
   );
   transform-origin: left center;
 }
@@ -462,7 +464,7 @@ body.modal-open .case-backdrop a {
 .project-item__meta-line {
   font-size: 0.7rem;
   letter-spacing: 0.06em;
-  color: var(--purple-light);
+  color: rgb(var(--accent-r), var(--accent-g), var(--accent-b));
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
 }
 

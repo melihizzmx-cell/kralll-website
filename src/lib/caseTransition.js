@@ -15,6 +15,11 @@ export function prefersReducedMotion() {
 // Bu sürenin sonunda case study açılır.
 export const FOCUS_HOLD_MS = 200
 
+// Case study kapandıktan sonra projenin accentColor'ının bağlamı koruma
+// süresi (ms) — bu sürenin sonunda ThemeEngine imleç konumuna göre normal
+// analog davranışına geri döner (bkz. ProjectModal + ThemeEngine).
+export const ACCENT_RELEASE_DELAY_MS = 550
+
 // Proje bulutundaki bir öğenin dış wrapper'ının (proximity/hover
 // sisteminden bağımsız) odak/geri çekilme durumuna göre animasyon hedefi.
 export function projectWrapperState({ revealed, focused, receding }) {

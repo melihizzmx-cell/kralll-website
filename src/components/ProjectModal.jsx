@@ -9,7 +9,9 @@ import {
   reducedHeroTitleVariants,
   heroGlowVariants,
   prefersReducedMotion,
+  ACCENT_RELEASE_DELAY_MS,
 } from "../lib/caseTransition"
+import { setThemeAccentOverride } from "../context/ThemeEngine"
 
 const titleFont = {
   serif: { fontFamily: "'Fraunces', serif", fontWeight: 500 },
@@ -37,6 +39,21 @@ export default function ProjectModal({ project, onClose, onNavigate }) {
   useEffect(() => {
     scrollRef.current?.scrollTo(0, 0)
   }, [project?.id])
+
+  // Case study açıkken (veya "Sıradaki Proje" ile geçişte) o projenin
+  // accentColor'ı ThemeEngine'de kilitli kalır. Kapandığında bağlamı kısa
+  // süre korur, ardından imleç konumuna göre normal analog davranışa
+  // (ProjectCloud üzerindeki proximity) geri bırakır.
+  useEffect(() => {
+    if (project?.accentColor) {
+      setThemeAccentOverride(project.accentColor)
+      return
+    }
+    const releaseTimer = window.setTimeout(() => {
+      setThemeAccentOverride(null)
+    }, ACCENT_RELEASE_DELAY_MS)
+    return () => window.clearTimeout(releaseTimer)
+  }, [project])
 
   const currentIndex = project ? projects.findIndex((p) => p.id === project.id) : -1
   const nextProject = currentIndex === -1 ? null : projects[(currentIndex + 1) % projects.length]

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { motion, useTransform } from "framer-motion"
 import { useMouse } from "../context/MouseContext"
 import { projectWrapperState, wrapperTransition } from "../lib/caseTransition"
+import { setThemeAccentOverride } from "../context/ThemeEngine"
 
 const PROXIMITY_RADIUS = 260
 const META_FLIP_THRESHOLD = 64
@@ -66,11 +67,11 @@ export default function ProjectItem({
   })
   const opacity = useTransform(proximity, [0, 1], [0.09, 1])
   const scale = useTransform(proximity, [0, 1], [1, 1.08])
-  const glowSize = useTransform(proximity, [0, 1], [0, 16])
-  const textShadow = useTransform(
-    glowSize,
-    (v) => `0 0 ${v}px rgba(199, 132, 255, ${v > 0 ? 0.7 : 0})`
-  )
+  // Glow'un bulanıklık/opaklığı burada proximity'den türetilir; rengi
+  // (--accent-r/g/b) ise CSS composes eder (bkz. .project-item text-shadow) —
+  // böylece JS hiç renk bilmeden ThemeEngine'in analog rengini takip eder.
+  const glowBlur = useTransform(proximity, [0, 1], [0, 16])
+  const glowOpacity = useTransform(proximity, [0, 1], [0, 0.75])
 
   const metaAbove = project.y >= META_FLIP_THRESHOLD
   const brandLine =
@@ -80,6 +81,11 @@ export default function ProjectItem({
 
   const variants = project.style === "serif" ? serifVariants : handVariants
   const variant = variants[index % variants.length]
+
+  const activateAccent = () => {
+    if (project.accentColor) setThemeAccentOverride(project.accentColor)
+  }
+  const releaseAccent = () => setThemeAccentOverride(null)
 
   return (
     <motion.div
@@ -107,13 +113,21 @@ export default function ProjectItem({
           fontFamily: variant.fontFamily,
           fontWeight: variant.fontWeight,
           fontStyle: variant.fontStyle,
-          textShadow,
+          "--glow-blur": glowBlur,
+          "--glow-opacity": glowOpacity,
         }}
         onClick={() => onSelect(project)}
         onHoverStart={() => setHovered(true)}
         onHoverEnd={() => setHovered(false)}
-        onFocus={() => setHovered(true)}
-        onBlur={() => setHovered(false)}
+        onFocus={() => {
+          setHovered(true)
+          activateAccent()
+        }}
+        onBlur={() => {
+          setHovered(false)
+          releaseAccent()
+        }}
+        onTouchStart={activateAccent}
       >
         {project.title}
         <motion.span

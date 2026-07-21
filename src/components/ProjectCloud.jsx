@@ -2,11 +2,17 @@ import { useState } from "react"
 import ProjectItem from "./ProjectItem"
 import { projects } from "../data/projects"
 import { FOCUS_HOLD_MS, prefersReducedMotion } from "../lib/caseTransition"
+import { setThemeAccentOverride } from "../context/ThemeEngine"
 
 export default function ProjectCloud({ onSelectProject, revealed }) {
   const [focusedId, setFocusedId] = useState(null)
 
   const handleSelect = (project) => {
+    // Tıklanan projenin rengi, açılış koreografisiyle eşzamanlı olarak
+    // hemen kilitlenir (bkz. ThemeEngine.setThemeAccentOverride) — case
+    // study açıkken de ProjectModal aynı rengi korur.
+    if (project.accentColor) setThemeAccentOverride(project.accentColor)
+
     if (prefersReducedMotion()) {
       onSelectProject(project)
       return
