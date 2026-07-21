@@ -58,7 +58,7 @@ export default function Sidebar({ activeSection, onSelectSection, revealed }) {
         transition={{
           opacity: {
             duration: revealed ? 0.6 : 1.2,
-            delay: revealed ? 0.25 : 0,
+            delay: revealed ? 0.2 : 0,
             ease: [0.16, 1, 0.3, 1],
           },
           x: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
@@ -73,7 +73,9 @@ export default function Sidebar({ activeSection, onSelectSection, revealed }) {
               key={item.id}
               type="button"
               className={`sidebar-link ${
-                activeSection === item.id ? "sidebar-link--active" : ""
+                activeSection === item.id && item.id !== "isler"
+                  ? "sidebar-link--active"
+                  : ""
               }`}
               onClick={() => handleSelect(item.id)}
             >

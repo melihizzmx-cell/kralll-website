@@ -10,9 +10,11 @@ export default function ProjectModal({ project, onClose }) {
     }
     document.addEventListener("keydown", handleKey)
     document.body.style.overflow = "hidden"
+    document.body.classList.add("modal-open")
     return () => {
       document.removeEventListener("keydown", handleKey)
       document.body.style.overflow = ""
+      document.body.classList.remove("modal-open")
     }
   }, [project, onClose])
 
@@ -58,10 +60,9 @@ export default function ProjectModal({ project, onClose }) {
             </div>
 
             <p className="modal-body">
-              Bu bölüm, {project.title} projesine ait notlar, görseller ve
-              sürecin özetini barındıracak şekilde büyütülebilir. Şimdilik
-              fikrin çekirdeği burada duruyor — art direction kararları,
-              referanslar ve üretim notları ileride bu panele eklenecek.
+              {project.title}, şu an bu tek satırlık iz kadar var: bir isim,
+              bir tarih, bir rol. Geri kalanı — kararlar, referanslar,
+              süreç — henüz karanlıkta olgunlaşıyor.
             </p>
           </motion.div>
         </motion.div>

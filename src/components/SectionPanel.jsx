@@ -1,9 +1,25 @@
+import { useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { X } from "lucide-react"
 import { sections } from "../data/sections"
 
 export default function SectionPanel({ sectionId, onClose }) {
   const data = sectionId ? sections[sectionId] : null
+
+  useEffect(() => {
+    if (!data) return
+    const handleKey = (e) => {
+      if (e.key === "Escape") onClose()
+    }
+    document.addEventListener("keydown", handleKey)
+    document.body.style.overflow = "hidden"
+    document.body.classList.add("modal-open")
+    return () => {
+      document.removeEventListener("keydown", handleKey)
+      document.body.style.overflow = ""
+      document.body.classList.remove("modal-open")
+    }
+  }, [data, onClose])
 
   return (
     <AnimatePresence>

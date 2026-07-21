@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react"
 import { motion, useTransform } from "framer-motion"
 import { useMouse } from "../context/MouseContext"
 
-const PROXIMITY_RADIUS = 230
+const PROXIMITY_RADIUS = 260
+const META_FLIP_THRESHOLD = 64
 
 const sizeFont = {
   small: "clamp(1.05rem, 1.9vw, 1.55rem)",
@@ -11,7 +12,7 @@ const sizeFont = {
   xlarge: "clamp(2.5rem, 5vw, 4rem)",
 }
 
-const handFonts = ["'Caveat', cursive", "'Nanum Pen Script', cursive"]
+const handWeights = [500, 600, 700]
 
 export default function ProjectItem({ project, index, onSelect, revealed }) {
   const btnRef = useRef(null)
@@ -53,6 +54,12 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
     (v) => `0 0 ${v}px rgba(199, 132, 255, ${v > 0 ? 0.7 : 0})`
   )
 
+  const metaAbove = project.y >= META_FLIP_THRESHOLD
+  const brandLine =
+    project.brand && project.brand !== project.title
+      ? `${project.brand} · ${project.year} · ${project.role}`
+      : `${project.year} · ${project.role}`
+
   return (
     <motion.div
       className={`project-wrapper project-wrapper--${project.size}`}
@@ -64,8 +71,8 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
           : { opacity: 0, filter: "blur(10px)", y: 18 }
       }
       transition={{
-        duration: 1.8,
-        delay: revealed ? 0.45 + index * 0.16 : 0,
+        duration: 1.3,
+        delay: revealed ? 0.3 + index * 0.09 : 0,
         ease: [0.16, 1, 0.3, 1],
       }}
     >
@@ -78,7 +85,7 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
           scale,
           rotate: project.rotation,
           fontSize: sizeFont[project.size],
-          fontFamily: handFonts[index % handFonts.length],
+          fontWeight: handWeights[index % handWeights.length],
           textShadow,
         }}
         onClick={() => onSelect(project)}
@@ -92,28 +99,22 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
           className="project-item__underline"
           style={{ scaleX: proximity }}
         />
-        <motion.span
-          className="project-item__arrow"
-          style={{ opacity: proximity }}
-        >
-          ↗
-        </motion.span>
       </motion.button>
 
       <motion.div
-        className="project-item__meta"
+        className={`project-item__meta ${
+          metaAbove ? "project-item__meta--above" : ""
+        }`}
         initial={false}
         animate={{
           opacity: hovered ? 1 : 0,
-          y: hovered ? 0 : 6,
+          y: hovered ? 0 : metaAbove ? -6 : 6,
         }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        style={{ rotate: project.rotation * 0.3 }}
+        style={{ x: "-50%", rotate: project.rotation * 0.3 }}
       >
         <span className="project-item__meta-title">{project.subtitle}</span>
-        <span className="project-item__meta-line">
-          {project.year} · {project.role}
-        </span>
+        <span className="project-item__meta-line">{brandLine}</span>
       </motion.div>
     </motion.div>
   )

@@ -62,6 +62,31 @@ a {
   color: var(--text-main);
 }
 
+:focus-visible {
+  outline: 1px solid rgba(199, 132, 255, 0.6);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+body.modal-open {
+  cursor: auto;
+}
+
+body.modal-open .cursor-glow,
+body.modal-open .cursor-dot {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.modal-open .modal-panel {
+  cursor: auto;
+}
+
+body.modal-open .modal-panel button,
+body.modal-open .modal-panel a {
+  cursor: pointer;
+}
+
 .app {
   position: relative;
   min-height: 100vh;
@@ -78,8 +103,9 @@ a {
   pointer-events: none;
   background: radial-gradient(
     ellipse at center,
-    transparent 35%,
-    rgba(0, 0, 0, 0.65) 100%
+    transparent 28%,
+    rgba(0, 0, 0, 0.5) 75%,
+    rgba(0, 0, 0, 0.88) 100%
   );
 }
 
@@ -88,21 +114,19 @@ a {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: linear-gradient(
-      to right,
-      rgba(199, 132, 255, 0.14) 1px,
-      transparent 1px
-    ),
-    linear-gradient(to bottom, rgba(199, 132, 255, 0.14) 1px, transparent 1px);
-  background-size: 64px 64px;
-  opacity: 0.85;
+  background-image: radial-gradient(
+    rgba(199, 132, 255, 0.55) 1px,
+    transparent 1.4px
+  );
+  background-size: 46px 46px;
+  opacity: 0.7;
   -webkit-mask-image: radial-gradient(
-    280px circle at var(--mx) var(--my),
+    300px circle at var(--mx) var(--my),
     black 0%,
     transparent 78%
   );
   mask-image: radial-gradient(
-    280px circle at var(--mx) var(--my),
+    300px circle at var(--mx) var(--my),
     black 0%,
     transparent 78%
   );
@@ -117,21 +141,6 @@ a {
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   background-size: 180px 180px;
-}
-
-.bg-scanline {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0.5;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.018) 0px,
-    rgba(255, 255, 255, 0.018) 1px,
-    transparent 1px,
-    transparent 3px
-  );
 }
 
 /* -------------------------------------------------------- */
@@ -150,7 +159,7 @@ a {
 .intro-overlay__text {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  letter-spacing: 0.4em;
+  letter-spacing: 0.26em;
   text-transform: lowercase;
   color: rgba(238, 233, 244, 0.45);
 }
@@ -186,13 +195,19 @@ a {
   position: fixed;
   top: 0;
   left: 0;
-  width: 6px;
-  height: 6px;
-  margin-top: -3px;
-  margin-left: -3px;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  margin-left: -7px;
   border-radius: 50%;
-  background: var(--purple-light);
-  box-shadow: 0 0 12px 2px rgba(199, 132, 255, 0.8);
+  background: radial-gradient(
+    circle,
+    rgba(255, 248, 240, 0.9) 0%,
+    rgba(255, 214, 235, 0.45) 45%,
+    transparent 75%
+  );
+  filter: blur(1.5px);
+  mix-blend-mode: screen;
   pointer-events: none;
   z-index: 41;
   will-change: transform;
@@ -219,7 +234,7 @@ a {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-dim);
-  opacity: 0.6;
+  opacity: 0.4;
 }
 
 .sidebar-nav {
@@ -293,24 +308,11 @@ a {
 }
 
 .hud-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: var(--purple);
-  box-shadow: 0 0 8px 1px rgba(155, 77, 255, 0.7);
-  animation: pulse 2.4s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: scale(0.9);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.15);
-  }
+  opacity: 0.7;
 }
 
 /* -------------------------------------------------------- */
@@ -338,11 +340,17 @@ a {
   position: relative;
   display: inline-flex;
   align-items: baseline;
-  gap: 0.4rem;
   line-height: 1;
   color: var(--text-main);
+  font-family: var(--font-hand);
   white-space: nowrap;
   transform-origin: center;
+}
+
+.project-item::before {
+  content: "";
+  position: absolute;
+  inset: -10px -14px;
 }
 
 .project-item__underline {
@@ -359,24 +367,26 @@ a {
   transform-origin: left center;
 }
 
-.project-item__arrow {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  color: var(--purple-light);
-  margin-left: 0.15em;
-}
-
 .project-item__meta {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: 50%;
   margin-top: 0.7rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.2rem;
   font-family: var(--font-mono);
   white-space: nowrap;
+  text-align: center;
   pointer-events: none;
+}
+
+.project-item__meta--above {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 0.7rem;
 }
 
 .project-item__meta-title {
@@ -413,9 +423,24 @@ a {
   overflow-y: auto;
   padding: 2.6rem;
   background: linear-gradient(180deg, #0b0810 0%, #050308 100%);
-  border: 1px solid rgba(155, 77, 255, 0.18);
-  border-radius: 4px;
-  box-shadow: 0 0 60px rgba(155, 77, 255, 0.08), 0 20px 60px rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+  box-shadow: 0 0 140px rgba(155, 77, 255, 0.1), 0 30px 80px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 77, 255, 0.35) transparent;
+}
+
+.modal-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-panel::-webkit-scrollbar-thumb {
+  background: rgba(155, 77, 255, 0.35);
+  border-radius: 3px;
 }
 
 .modal-close {
@@ -469,9 +494,10 @@ a {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
   color: var(--text-dim);
+  opacity: 0.8;
   margin-bottom: 1.6rem;
 }
 
@@ -617,13 +643,20 @@ a {
   }
 
   .project-item {
-    opacity: 1 !important;
+    opacity: 0.94 !important;
     transform: none !important;
     white-space: normal;
   }
 
+  .project-item::before {
+    display: none;
+  }
+
   .project-item__meta {
     position: static;
+    left: auto;
+    align-items: flex-start;
+    text-align: left;
     margin-top: 0.5rem;
     opacity: 0.75 !important;
     transform: none !important;

@@ -12,7 +12,7 @@ function useClock() {
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000)
+    const id = setInterval(() => setNow(new Date()), 30000)
     return () => clearInterval(id)
   }, [])
 
@@ -23,7 +23,6 @@ function formatTime(date) {
   return date.toLocaleTimeString("tr-TR", {
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
     hour12: false,
   })
 }
@@ -64,7 +63,6 @@ export default function App() {
         <div className="bg-vignette" aria-hidden="true" />
         <div className="bg-grid" aria-hidden="true" />
         <div className="bg-noise" aria-hidden="true" />
-        <div className="bg-scanline" aria-hidden="true" />
 
         <CursorGlow />
 
@@ -83,7 +81,7 @@ export default function App() {
           aria-hidden="true"
           initial={{ opacity: 0 }}
           animate={{ opacity: hasMoved ? 1 : 0 }}
-          transition={{ duration: 1.2, delay: hasMoved ? 0.3 : 0, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.2, delay: hasMoved ? 0.2 : 0, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="hud-time">{formatTime(now)}</span>
           <span className="hud-date">{formatDate(now)}</span>
@@ -94,7 +92,7 @@ export default function App() {
           aria-hidden="true"
           initial={{ opacity: 0 }}
           animate={{ opacity: hasMoved ? 1 : 0 }}
-          transition={{ duration: 1.2, delay: hasMoved ? 0.3 : 0, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.2, delay: hasMoved ? 0.2 : 0, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="hud-line">
             <span className="hud-dot" /> system online
