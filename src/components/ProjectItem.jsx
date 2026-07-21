@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { motion, useTransform } from "framer-motion"
 import { useMouse } from "../context/MouseContext"
+import { projectWrapperState, wrapperTransition } from "../lib/caseTransition"
 
 const PROXIMITY_RADIUS = 260
 const META_FLIP_THRESHOLD = 64
@@ -24,7 +25,14 @@ const serifVariants = [
   { fontFamily: "'Fraunces', serif", fontWeight: 600, fontStyle: "normal" },
 ]
 
-export default function ProjectItem({ project, index, onSelect, revealed }) {
+export default function ProjectItem({
+  project,
+  index,
+  onSelect,
+  revealed,
+  focused = false,
+  receding = false,
+}) {
   const btnRef = useRef(null)
   const [center, setCenter] = useState({ x: -1000, y: -1000 })
   const [hovered, setHovered] = useState(false)
@@ -77,17 +85,15 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
     <motion.div
       className={`project-wrapper project-wrapper--${project.size}`}
       style={{ left: `${project.x}%`, top: `${project.y}%` }}
-      initial={{ opacity: 0, filter: "blur(10px)", y: 18 }}
-      animate={
-        revealed
-          ? { opacity: 1, filter: "blur(0px)", y: 0 }
-          : { opacity: 0, filter: "blur(10px)", y: 18 }
+      initial={{ opacity: 0, filter: "blur(10px)", y: 18, scale: 1 }}
+      animate={projectWrapperState({ revealed, focused, receding })}
+      transition={
+        wrapperTransition({ focused, receding }) ?? {
+          duration: 1.3,
+          delay: revealed ? 0.3 + index * 0.09 : 0,
+          ease: [0.16, 1, 0.3, 1],
+        }
       }
-      transition={{
-        duration: 1.3,
-        delay: revealed ? 0.3 + index * 0.09 : 0,
-        ease: [0.16, 1, 0.3, 1],
-      }}
     >
       <motion.button
         ref={btnRef}

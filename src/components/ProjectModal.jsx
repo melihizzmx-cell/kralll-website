@@ -2,6 +2,14 @@ import { useEffect, useRef } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowRight, X } from "lucide-react"
 import { projects } from "../data/projects"
+import {
+  casePanelVariants,
+  reducedCasePanelVariants,
+  heroTitleVariants,
+  reducedHeroTitleVariants,
+  heroGlowVariants,
+  prefersReducedMotion,
+} from "../lib/caseTransition"
 
 const titleFont = {
   serif: { fontFamily: "'Fraunces', serif", fontWeight: 500 },
@@ -32,6 +40,7 @@ export default function ProjectModal({ project, onClose, onNavigate }) {
 
   const currentIndex = project ? projects.findIndex((p) => p.id === project.id) : -1
   const nextProject = currentIndex === -1 ? null : projects[(currentIndex + 1) % projects.length]
+  const reduced = prefersReducedMotion()
 
   return (
     <AnimatePresence>
@@ -55,9 +64,10 @@ export default function ProjectModal({ project, onClose, onNavigate }) {
           <motion.div
             key={project.id}
             className="case-panel"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            variants={reduced ? reducedCasePanelVariants : casePanelVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
             onClick={(e) => e.stopPropagation()}
           >
             {project.caseStudy ? (
@@ -66,17 +76,44 @@ export default function ProjectModal({ project, onClose, onNavigate }) {
                 font={titleFont[project.style] ?? titleFont.hand}
                 nextProject={nextProject}
                 onNavigate={onNavigate}
+                reduced={reduced}
               />
             ) : (
               <CompactCaseStudy
                 project={project}
                 font={titleFont[project.style] ?? titleFont.hand}
+                reduced={reduced}
               />
             )}
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
+  )
+}
+
+// Kategori bulutunda odaklanan proje adıyla hero başlığını görsel olarak
+// bağlayan ortak bileşen. Tüm case study türleri aynısını kullanır.
+function HeroTitle({ project, font, reduced }) {
+  return (
+    <motion.h2
+      className="study-title"
+      style={font}
+      variants={reduced ? reducedHeroTitleVariants : heroTitleVariants}
+      initial="initial"
+      animate="animate"
+    >
+      {project.title}
+      {!reduced && (
+        <motion.span
+          className="study-title__glow"
+          aria-hidden="true"
+          variants={heroGlowVariants}
+          initial="initial"
+          animate="animate"
+        />
+      )}
+    </motion.h2>
   )
 }
 
@@ -89,7 +126,7 @@ function ContentNeeded({ label, aspect }) {
   )
 }
 
-function FullCaseStudy({ project, font, nextProject, onNavigate }) {
+function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
   return (
     <>
       <div className="study-hero">
@@ -98,9 +135,7 @@ function FullCaseStudy({ project, font, nextProject, onNavigate }) {
 
       <div className="study-header">
         <span className="case-eyebrow">{project.brand}</span>
-        <h2 className="study-title" style={font}>
-          {project.title}
-        </h2>
+        <HeroTitle project={project} font={font} reduced={reduced} />
         <p className="case-subtitle">{project.subtitle}</p>
         <div className="case-meta">
           <span>{project.year}</span>
@@ -160,7 +195,7 @@ function FullCaseStudy({ project, font, nextProject, onNavigate }) {
   )
 }
 
-function CompactCaseStudy({ project, font }) {
+function CompactCaseStudy({ project, font, reduced }) {
   return (
     <>
       <div className="study-hero">
@@ -169,9 +204,7 @@ function CompactCaseStudy({ project, font }) {
 
       <div className="study-header">
         <span className="case-eyebrow">{project.brand}</span>
-        <h2 className="study-title" style={font}>
-          {project.title}
-        </h2>
+        <HeroTitle project={project} font={font} reduced={reduced} />
         <p className="case-subtitle">{project.subtitle}</p>
         <div className="case-meta">
           <span>{project.year}</span>
