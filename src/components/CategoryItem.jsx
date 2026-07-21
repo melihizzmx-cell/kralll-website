@@ -97,9 +97,10 @@ export default function CategoryItem({ category, index, onSelect, revealed }) {
         initial={false}
         animate={{
           opacity: hovered ? 1 : 0,
-          y: hovered ? 0 : 6,
+          y: hovered ? 0 : 4,
+          filter: hovered ? "blur(0px)" : "blur(3px)",
         }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
         style={{ x: "-50%", rotate: category.rotation * 0.3 }}
       >
         <span

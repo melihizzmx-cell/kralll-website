@@ -12,7 +12,7 @@ export const categories = [
   {
     id: "selected-works",
     title: "Selected Works",
-    tagline: "Marka ve kampanya işleri",
+    tagline: "Ideas made public.",
     accentColor: "#9B4DFF",
     x: 30,
     y: 22,
@@ -22,7 +22,7 @@ export const categories = [
   {
     id: "ai-lab",
     title: "AI Lab",
-    tagline: "Üretken görsel denemeleri",
+    tagline: "Experiments with machines.",
     accentColor: "#55D7FF",
     x: 75,
     y: 16,
@@ -32,7 +32,7 @@ export const categories = [
   {
     id: "motion",
     title: "Motion",
-    tagline: "Hareket ve zaman üzerine",
+    tagline: "Thinking in time.",
     accentColor: "#5267FF",
     x: 64,
     y: 45,
@@ -42,7 +42,7 @@ export const categories = [
   {
     id: "image-direction",
     title: "Image Direction",
-    tagline: "Kadraj, ışık, görsel dil",
+    tagline: "Images with intent.",
     accentColor: "#F37121",
     x: 17,
     y: 55,
@@ -52,7 +52,7 @@ export const categories = [
   {
     id: "playground",
     title: "Playground",
-    tagline: "Bitmemiş ve serbest denemeler",
+    tagline: "No brief. No rules.",
     accentColor: "#B7D65C",
     x: 55,
     y: 72,
@@ -62,7 +62,7 @@ export const categories = [
   {
     id: "about",
     title: "About",
-    tagline: "Kim olduğum, ne yaptığım",
+    tagline: "The story behind the work.",
     accentColor: "#E6E6E6",
     x: 13,
     y: 82,
