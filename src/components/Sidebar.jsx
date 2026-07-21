@@ -13,8 +13,9 @@ const NAV_ITEMS = [
   { id: "iletisim", label: "İletişim" },
 ]
 
-export default function Sidebar({ activeSection, onSelectSection }) {
+export default function Sidebar({ activeSection, onSelectSection, revealed }) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== "undefined" && window.matchMedia(MOBILE_QUERY).matches
   )
@@ -51,13 +52,19 @@ export default function Sidebar({ activeSection, onSelectSection }) {
         className="sidebar"
         initial={{ opacity: 0 }}
         animate={{
-          opacity: 1,
+          opacity: revealed ? (hovered || isMobile ? 0.95 : 0.5) : 0,
           x: isMobile ? (mobileOpen ? 0 : -300) : 0,
         }}
         transition={{
-          opacity: { duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] },
+          opacity: {
+            duration: revealed ? 0.6 : 1.2,
+            delay: revealed ? 0.25 : 0,
+            ease: [0.16, 1, 0.3, 1],
+          },
           x: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
         }}
+        onHoverStart={() => setHovered(true)}
+        onHoverEnd={() => setHovered(false)}
       >
         <div className="sidebar-mark">kralll</div>
         <nav className="sidebar-nav">

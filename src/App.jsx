@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
 import { MouseProvider } from "./context/MouseContext"
 import CursorGlow from "./components/CursorGlow"
 import Sidebar from "./components/Sidebar"
 import ProjectCloud from "./components/ProjectCloud"
 import ProjectModal from "./components/ProjectModal"
 import SectionPanel from "./components/SectionPanel"
+import IntroOverlay from "./components/IntroOverlay"
 
 function useClock() {
   const [now, setNow] = useState(new Date())
@@ -39,7 +41,18 @@ function formatDate(date) {
 export default function App() {
   const [selectedProject, setSelectedProject] = useState(null)
   const [activeSection, setActiveSection] = useState("isler")
+  const [hasMoved, setHasMoved] = useState(false)
   const now = useClock()
+
+  useEffect(() => {
+    const reveal = () => setHasMoved(true)
+    window.addEventListener("pointermove", reveal, { once: true })
+    window.addEventListener("touchstart", reveal, { once: true })
+    return () => {
+      window.removeEventListener("pointermove", reveal)
+      window.removeEventListener("touchstart", reveal)
+    }
+  }, [])
 
   const handleSelectSection = (id) => {
     setActiveSection(id)
@@ -50,35 +63,52 @@ export default function App() {
       <div className="app">
         <div className="bg-vignette" aria-hidden="true" />
         <div className="bg-grid" aria-hidden="true" />
-        <div className="bg-grid bg-grid--focus" aria-hidden="true" />
         <div className="bg-noise" aria-hidden="true" />
         <div className="bg-scanline" aria-hidden="true" />
 
         <CursorGlow />
 
-        <Sidebar activeSection={activeSection} onSelectSection={handleSelectSection} />
+        <Sidebar
+          activeSection={activeSection}
+          onSelectSection={handleSelectSection}
+          revealed={hasMoved}
+        />
 
         <main className="stage">
-          <ProjectCloud onSelectProject={setSelectedProject} />
+          <ProjectCloud onSelectProject={setSelectedProject} revealed={hasMoved} />
         </main>
 
-        <header className="hud hud--top" aria-hidden="true">
+        <motion.header
+          className="hud hud--top"
+          aria-hidden="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: hasMoved ? 1 : 0 }}
+          transition={{ duration: 1.2, delay: hasMoved ? 0.3 : 0, ease: [0.16, 1, 0.3, 1] }}
+        >
           <span className="hud-time">{formatTime(now)}</span>
           <span className="hud-date">{formatDate(now)}</span>
-        </header>
+        </motion.header>
 
-        <footer className="hud hud--bottom" aria-hidden="true">
+        <motion.footer
+          className="hud hud--bottom"
+          aria-hidden="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: hasMoved ? 1 : 0 }}
+          transition={{ duration: 1.2, delay: hasMoved ? 0.3 : 0, ease: [0.16, 1, 0.3, 1] }}
+        >
           <span className="hud-line">
             <span className="hud-dot" /> system online
           </span>
           <span className="hud-line hud-line--dim">focus mode active</span>
-        </footer>
+        </motion.footer>
 
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
         <SectionPanel
           sectionId={activeSection === "isler" ? null : activeSection}
           onClose={() => setActiveSection("isler")}
         />
+
+        <IntroOverlay visible={!hasMoved} />
       </div>
     </MouseProvider>
   )

@@ -6,10 +6,10 @@ export default function CursorGlow() {
   const { mouseX, mouseY } = useMouse()
   const [pointerFine, setPointerFine] = useState(true)
 
-  const glowX = useSpring(mouseX, { damping: 34, stiffness: 90, mass: 0.7 })
-  const glowY = useSpring(mouseY, { damping: 34, stiffness: 90, mass: 0.7 })
-  const dotX = useSpring(mouseX, { damping: 42, stiffness: 380, mass: 0.2 })
-  const dotY = useSpring(mouseY, { damping: 42, stiffness: 380, mass: 0.2 })
+  const glowX = useSpring(mouseX, { damping: 28, stiffness: 42, mass: 1.1 })
+  const glowY = useSpring(mouseY, { damping: 28, stiffness: 42, mass: 1.1 })
+  const dotX = useSpring(mouseX, { damping: 38, stiffness: 300, mass: 0.25 })
+  const dotY = useSpring(mouseY, { damping: 38, stiffness: 300, mass: 0.25 })
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: fine)")

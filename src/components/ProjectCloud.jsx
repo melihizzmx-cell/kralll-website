@@ -1,7 +1,7 @@
 import ProjectItem from "./ProjectItem"
 import { projects } from "../data/projects"
 
-export default function ProjectCloud({ onSelectProject }) {
+export default function ProjectCloud({ onSelectProject, revealed }) {
   return (
     <div className="project-cloud" aria-label="Proje evreni">
       {projects.map((project, index) => (
@@ -10,6 +10,7 @@ export default function ProjectCloud({ onSelectProject }) {
           project={project}
           index={index}
           onSelect={onSelectProject}
+          revealed={revealed}
         />
       ))}
     </div>

@@ -2,18 +2,18 @@ import { useEffect, useRef, useState } from "react"
 import { motion, useTransform } from "framer-motion"
 import { useMouse } from "../context/MouseContext"
 
-const PROXIMITY_RADIUS = 260
+const PROXIMITY_RADIUS = 230
 
 const sizeFont = {
-  small: "clamp(1.15rem, 2.1vw, 1.7rem)",
-  medium: "clamp(1.6rem, 3vw, 2.5rem)",
-  large: "clamp(2.1rem, 4.2vw, 3.4rem)",
-  xlarge: "clamp(2.6rem, 5.2vw, 4.2rem)",
+  small: "clamp(1.05rem, 1.9vw, 1.55rem)",
+  medium: "clamp(1.5rem, 2.9vw, 2.3rem)",
+  large: "clamp(2rem, 4vw, 3.2rem)",
+  xlarge: "clamp(2.5rem, 5vw, 4rem)",
 }
 
 const handFonts = ["'Caveat', cursive", "'Nanum Pen Script', cursive"]
 
-export default function ProjectItem({ project, index, onSelect }) {
+export default function ProjectItem({ project, index, onSelect, revealed }) {
   const btnRef = useRef(null)
   const [center, setCenter] = useState({ x: -1000, y: -1000 })
   const [hovered, setHovered] = useState(false)
@@ -45,23 +45,27 @@ export default function ProjectItem({ project, index, onSelect }) {
   const proximity = useTransform(distance, [0, PROXIMITY_RADIUS], [1, 0], {
     clamp: true,
   })
-  const opacity = useTransform(proximity, [0, 1], [0.09, 1])
-  const scale = useTransform(proximity, [0, 1], [1, 1.1])
-  const glowSize = useTransform(proximity, [0, 1], [0, 18])
+  const opacity = useTransform(proximity, [0, 1], [0.035, 1])
+  const scale = useTransform(proximity, [0, 1], [1, 1.08])
+  const glowSize = useTransform(proximity, [0, 1], [0, 16])
   const textShadow = useTransform(
     glowSize,
-    (v) => `0 0 ${v}px rgba(199, 132, 255, ${v > 0 ? 0.75 : 0})`
+    (v) => `0 0 ${v}px rgba(199, 132, 255, ${v > 0 ? 0.7 : 0})`
   )
 
   return (
     <motion.div
       className={`project-wrapper project-wrapper--${project.size}`}
       style={{ left: `${project.x}%`, top: `${project.y}%` }}
-      initial={{ opacity: 0, filter: "blur(8px)", y: 16 }}
-      animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+      initial={{ opacity: 0, filter: "blur(10px)", y: 18 }}
+      animate={
+        revealed
+          ? { opacity: 1, filter: "blur(0px)", y: 0 }
+          : { opacity: 0, filter: "blur(10px)", y: 18 }
+      }
       transition={{
-        duration: 1.6,
-        delay: 0.4 + index * 0.14,
+        duration: 1.8,
+        delay: revealed ? 0.45 + index * 0.16 : 0,
         ease: [0.16, 1, 0.3, 1],
       }}
     >
