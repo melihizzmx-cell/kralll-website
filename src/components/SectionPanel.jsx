@@ -52,7 +52,9 @@ export default function SectionPanel({ sectionId, onClose }) {
               <X size={18} strokeWidth={1.5} />
             </button>
 
-            <span className="modal-eyebrow">{data.eyebrow}</span>
+            <span className="modal-eyebrow" lang={data.eyebrowLang}>
+              {data.eyebrow}
+            </span>
             <h2 className="modal-title modal-title--sm">{data.title}</h2>
 
             {data.body?.map((paragraph, i) => (
@@ -70,6 +72,17 @@ export default function SectionPanel({ sectionId, onClose }) {
                   </li>
                 ))}
               </ul>
+            )}
+
+            {data.timeline && (
+              <div className="modal-timeline">
+                {data.timeline.map((item, i) => (
+                  <div className="modal-timeline__row" key={i}>
+                    <span className="modal-timeline__year">{item.year}</span>
+                    <span className="modal-timeline__text">{item.text}</span>
+                  </div>
+                ))}
+              </div>
             )}
 
             {data.quotes && (

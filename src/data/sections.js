@@ -6,10 +6,31 @@ export const sections = {
   hakkimda: {
     title: "Hakkımda",
     eyebrow: "Profil",
-    body: [
-      "Art direction ve dijital ürün tarafında çalışan, fikirlerini genelde karanlıkta biriktiren biriyim.",
-      "Bu site, bitmiş bir portföyden çok üzerinde çalıştığım şeylerin dağınık bir haritası. Projeler, notlar ve denemeler zamanla burada birikiyor.",
+    timeline: [
+      { year: "2001", text: "Born in Trabzon." },
+      { year: "2021", text: "Started working in advertising." },
+      { year: "2024", text: "Focused on Art Direction." },
+      { year: "2025", text: "AI became part of the creative process." },
+      { year: "Today", text: "Building visual systems and creative experiences." },
     ],
+  },
+  motion: {
+    title: "Still taking shape.",
+    eyebrow: "Motion",
+    eyebrowLang: "en",
+    body: ["New work will appear here."],
+  },
+  "image-direction": {
+    title: "Still taking shape.",
+    eyebrow: "Image Direction",
+    eyebrowLang: "en",
+    body: ["New work will appear here."],
+  },
+  playground: {
+    title: "Still taking shape.",
+    eyebrow: "Playground",
+    eyebrowLang: "en",
+    body: ["New work will appear here."],
   },
   notlar: {
     title: "Not Defteri",
