@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import { motion, useTransform } from "framer-motion"
 import { useMouse } from "../context/MouseContext"
+import { projectWrapperState, wrapperTransition } from "../lib/caseTransition"
+import { setThemeAccentOverride } from "../context/ThemeEngine"
 
 const PROXIMITY_RADIUS = 260
 const META_FLIP_THRESHOLD = 64
@@ -24,7 +26,14 @@ const serifVariants = [
   { fontFamily: "'Fraunces', serif", fontWeight: 600, fontStyle: "normal" },
 ]
 
-export default function ProjectItem({ project, index, onSelect, revealed }) {
+export default function ProjectItem({
+  project,
+  index,
+  onSelect,
+  revealed,
+  focused = false,
+  receding = false,
+}) {
   const btnRef = useRef(null)
   const [center, setCenter] = useState({ x: -1000, y: -1000 })
   const [hovered, setHovered] = useState(false)
@@ -58,11 +67,11 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
   })
   const opacity = useTransform(proximity, [0, 1], [0.09, 1])
   const scale = useTransform(proximity, [0, 1], [1, 1.08])
-  const glowSize = useTransform(proximity, [0, 1], [0, 16])
-  const textShadow = useTransform(
-    glowSize,
-    (v) => `0 0 ${v}px rgba(199, 132, 255, ${v > 0 ? 0.7 : 0})`
-  )
+  // Glow'un bulanıklık/opaklığı burada proximity'den türetilir; rengi
+  // (--accent-r/g/b) ise CSS composes eder (bkz. .project-item text-shadow) —
+  // böylece JS hiç renk bilmeden ThemeEngine'in analog rengini takip eder.
+  const glowBlur = useTransform(proximity, [0, 1], [0, 16])
+  const glowOpacity = useTransform(proximity, [0, 1], [0, 0.75])
 
   const metaAbove = project.y >= META_FLIP_THRESHOLD
   const brandLine =
@@ -73,21 +82,24 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
   const variants = project.style === "serif" ? serifVariants : handVariants
   const variant = variants[index % variants.length]
 
+  const activateAccent = () => {
+    if (project.accentColor) setThemeAccentOverride(project.accentColor)
+  }
+  const releaseAccent = () => setThemeAccentOverride(null)
+
   return (
     <motion.div
       className={`project-wrapper project-wrapper--${project.size}`}
       style={{ left: `${project.x}%`, top: `${project.y}%` }}
-      initial={{ opacity: 0, filter: "blur(10px)", y: 18 }}
-      animate={
-        revealed
-          ? { opacity: 1, filter: "blur(0px)", y: 0 }
-          : { opacity: 0, filter: "blur(10px)", y: 18 }
+      initial={{ opacity: 0, filter: "blur(10px)", y: 18, scale: 1 }}
+      animate={projectWrapperState({ revealed, focused, receding })}
+      transition={
+        wrapperTransition({ focused, receding }) ?? {
+          duration: 1.3,
+          delay: revealed ? 0.3 + index * 0.09 : 0,
+          ease: [0.16, 1, 0.3, 1],
+        }
       }
-      transition={{
-        duration: 1.3,
-        delay: revealed ? 0.3 + index * 0.09 : 0,
-        ease: [0.16, 1, 0.3, 1],
-      }}
     >
       <motion.button
         ref={btnRef}
@@ -101,13 +113,21 @@ export default function ProjectItem({ project, index, onSelect, revealed }) {
           fontFamily: variant.fontFamily,
           fontWeight: variant.fontWeight,
           fontStyle: variant.fontStyle,
-          textShadow,
+          "--glow-blur": glowBlur,
+          "--glow-opacity": glowOpacity,
         }}
         onClick={() => onSelect(project)}
         onHoverStart={() => setHovered(true)}
         onHoverEnd={() => setHovered(false)}
-        onFocus={() => setHovered(true)}
-        onBlur={() => setHovered(false)}
+        onFocus={() => {
+          setHovered(true)
+          activateAccent()
+        }}
+        onBlur={() => {
+          setHovered(false)
+          releaseAccent()
+        }}
+        onTouchStart={activateAccent}
       >
         {project.title}
         <motion.span

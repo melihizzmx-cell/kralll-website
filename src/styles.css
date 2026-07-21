@@ -318,9 +318,11 @@ body.modal-open .case-backdrop a {
 }
 
 .hud--bottom {
-  left: 160px;
+  left: auto;
+  right: 1.8rem;
   bottom: 1.6rem;
   flex-direction: column;
+  align-items: flex-end;
   gap: 0.35rem;
 }
 
@@ -342,26 +344,29 @@ body.modal-open .case-backdrop a {
 .identity {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
-  margin-bottom: 0.6rem;
+  gap: 0.22rem;
+  margin-bottom: 0.85rem;
 }
 
 .identity-name {
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  color: rgba(238, 233, 244, 0.42);
+  font-size: clamp(0.82rem, 1.4vw, 0.92rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  color: rgba(238, 233, 244, 0.82);
 }
 
 .identity-role {
-  font-size: 0.6rem;
-  letter-spacing: 0.06em;
-  color: var(--text-dim);
+  font-size: 0.66rem;
+  letter-spacing: 0.07em;
+  color: var(--purple-light);
+  opacity: 0.75;
 }
 
 .editorial-hint {
   position: fixed;
   right: 1.8rem;
-  bottom: 1.7rem;
+  bottom: 6.4rem;
   z-index: 15;
   max-width: 220px;
   margin: 0;
@@ -404,6 +409,8 @@ body.modal-open .case-backdrop a {
   font-family: var(--font-hand);
   white-space: nowrap;
   transform-origin: center;
+  text-shadow: 0 0 var(--glow-blur, 0px)
+    rgba(var(--accent-r), var(--accent-g), var(--accent-b), var(--glow-opacity, 0));
 }
 
 .project-item::before {
@@ -420,8 +427,8 @@ body.modal-open .case-backdrop a {
   height: 1px;
   background: linear-gradient(
     to right,
-    var(--purple-light),
-    rgba(199, 132, 255, 0.2)
+    rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.95),
+    rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.2)
   );
   transform-origin: left center;
 }
@@ -457,7 +464,7 @@ body.modal-open .case-backdrop a {
 .project-item__meta-line {
   font-size: 0.7rem;
   letter-spacing: 0.06em;
-  color: var(--purple-light);
+  color: rgb(var(--accent-r), var(--accent-g), var(--accent-b));
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
 }
 
@@ -922,10 +929,27 @@ body.modal-open .case-backdrop a {
 }
 
 .study-title {
+  position: relative;
+  display: inline-block;
   font-size: clamp(2.6rem, 6vw, 4.4rem);
   line-height: 1;
   margin: 0.3rem 0 0.6rem;
   color: var(--text-main);
+}
+
+.study-title__glow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.1em;
+  height: 2px;
+  transform-origin: left center;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.85),
+    rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0)
+  );
+  pointer-events: none;
 }
 
 .study-body {
@@ -1099,6 +1123,9 @@ body.modal-open .case-backdrop a {
 
   .hud--bottom {
     left: 1.4rem;
+    right: auto;
+    bottom: 1.4rem;
+    align-items: flex-start;
   }
 
   .hud--top {

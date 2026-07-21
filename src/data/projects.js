@@ -13,6 +13,11 @@
 // Gerçek görsel/video materyali henüz yoksa `outputs` altındaki her
 // bölüm otomatik olarak "content needed" etiketiyle boş gösterilir —
 // buraya sahte/placeholder görsel eklenmemeli.
+//
+// accentColor : Selected Works içinde imleç/dokunma/klavye odağı bu projeye
+// yaklaştığında ThemeEngine'in analog olarak geçtiği renk (bkz.
+// src/context/ThemeEngine.jsx). Marka dünyasından ilham alan, karanlık
+// sistemle uyumlu, kontrollü (neon olmayan) tonlar seçilmeli.
 
 export const projects = [
   {
@@ -27,6 +32,7 @@ export const projects = [
     rotation: -6,
     size: "large",
     style: "serif",
+    accentColor: "#7C4DBF",
     caseStudy: true,
     problem:
       "TurkNet, kalabalık bir pazarda konuşan ama duyulmayan bir markaya dönüşmüştü; herkes aynı anda hız, fiyat ve kapsama alanı vaat ediyor, hiçbiri öne çıkamıyordu.",
@@ -76,6 +82,7 @@ export const projects = [
     rotation: 4,
     size: "small",
     style: "serif",
+    accentColor: "#B5581F",
     insight: "Marka büyüdükçe kimliği farklı ellerde farklı şekillere giriyordu.",
     idea: "Esnek ama kendi kendini koruyan, hareket hâlinde de tutarlı kalan bir sistem tasarlamak.",
     execution:
@@ -93,6 +100,7 @@ export const projects = [
     rotation: 6,
     size: "xlarge",
     style: "serif",
+    accentColor: "#D98B4A",
     insight:
       "Ürün güçlüydü ama arayüz bunu hissettirmiyordu; her ekran birbirinden kopuk duruyordu.",
     idea: "Ürünün kendi mantığını arayüze de taşıyan, sakin ve kendinden emin bir sistem kurmak.",
@@ -111,6 +119,7 @@ export const projects = [
     rotation: -5,
     size: "medium",
     style: "hand",
+    accentColor: "#3E7CA6",
     insight: "Üretken araçlar hızlı sonuç veriyordu ama kendi sesimi kaybetme riski hep vardı.",
     idea: "AI'ı bir sonuç makinesi değil, taslak/sketch ortağı gibi kullanmak.",
     execution: "Prompt, seçim ve düzeltme döngüsü küçük, tekrar eden denemelerle test ediliyor.",
@@ -127,6 +136,7 @@ export const projects = [
     rotation: -4,
     size: "large",
     style: "hand",
+    accentColor: "#B36B82",
     insight: "Müşteri işleri arasında kendi fikirlerimi biriktirecek bir yer yoktu.",
     idea: "Küçük, bitmemiş olsa bile sahiplenilen işler için kalıcı bir alan açmak.",
     execution: "Her biri farklı ölçekte, farklı zamanda; ortak paydası sadece dürüstlük.",
@@ -143,6 +153,7 @@ export const projects = [
     rotation: 7,
     size: "small",
     style: "hand",
+    accentColor: "#5E7A94",
     insight: "Referans aramak, her seferinde sıfırdan başlayan dağınık bir süreçti.",
     idea: "Tekrar dönülebilecek, zamanla büyüyen kişisel bir görsel dil arşivi kurmak.",
     execution: "Kadraj, ışık ve renk üzerinden düzenli olarak güncellenen bir koleksiyon.",
@@ -159,6 +170,7 @@ export const projects = [
     rotation: -8,
     size: "medium",
     style: "hand",
+    accentColor: "#B8923A",
     insight: "En iyi fikirler genelde brief'ten önce, rastgele anlarda geliyordu.",
     idea: "Bu anları kaybetmeden, ham hâlleriyle bir havuzda tutmak.",
     execution: "Her biri tek cümlelik bir tohum; bir kısmı büyüyor, çoğu burada bekliyor.",
@@ -175,6 +187,7 @@ export const projects = [
     rotation: 4,
     size: "small",
     style: "hand",
+    accentColor: "#6E9C7C",
     insight: "Format hızlı tüketiliyor ama fikir çoğu zaman hızla eskiyordu.",
     idea: "Formattan bağımsız, zamana dayanıklı küçük içerik fikirleri biriktirmek.",
     execution: "Notlar; başlık, ton ve görsel yön olarak üçe ayrılıyor.",
