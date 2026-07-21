@@ -6,6 +6,13 @@
 // size      : "small" | "medium" | "large" | "xlarge"
 // style     : "serif" (marka/müşteri işleri) | "hand" (kişisel/deneysel işler)
 // insight / idea / execution : proje modalındaki kısa case-study notları
+//
+// caseStudy : true ise proje, ProjectModal içinde tam kapsamlı editoryal
+// case study şablonuyla açılır (hero + problem + içgörü + fikir + çıktılar
+// + rol + sonraki proje). Bu alan yoksa proje eski/kompakt modal ile açılır.
+// Gerçek görsel/video materyali henüz yoksa `outputs` altındaki her
+// bölüm otomatik olarak "content needed" etiketiyle boş gösterilir —
+// buraya sahte/placeholder görsel eklenmemeli.
 
 export const projects = [
   {
@@ -20,11 +27,42 @@ export const projects = [
     rotation: -6,
     size: "large",
     style: "serif",
+    caseStudy: true,
+    problem:
+      "TurkNet, kalabalık bir pazarda konuşan ama duyulmayan bir markaya dönüşmüştü; herkes aynı anda hız, fiyat ve kapsama alanı vaat ediyor, hiçbiri öne çıkamıyordu.",
     insight:
       "Rakiplerin hepsi aynı anda her şeyi vaat ediyordu; kullanıcı hangi sözün gerçek olduğunu ayırt edemiyordu.",
     idea: "Tek bir vaade odaklanan, gürültüyü kesen sakin bir marka sesi kurmak.",
     execution:
       "Kampanya dili, arayüz tonu ve görsel sistem aynı tek cümle etrafında sadeleştirildi.",
+    outputs: [
+      {
+        type: "Film",
+        aspect: "16 / 9",
+        description:
+          "Marka filmi, 'çok odaklı' fikrini tek bir sahnede özetleyen sakin bir açılış sekansı üzerine kuruldu.",
+      },
+      {
+        type: "Anahtar Görsel (KV)",
+        aspect: "4 / 5",
+        description:
+          "Kampanyanın anahtar görseli, sade bir kompozisyonla tek bir mesaja odaklanmayı görselleştirdi.",
+      },
+      {
+        type: "OOH",
+        aspect: "21 / 9",
+        description:
+          "Şehir içi mecralarda, tek cümlelik bir vaat dışında hiçbir şey taşımayan bir dış mekân uygulaması tasarlandı.",
+      },
+      {
+        type: "Sosyal Medya",
+        aspect: "1 / 1",
+        description:
+          "Sosyal içerikler, kampanyanın ana tonunu koruyarak platform bazlı kısa varyasyonlara ayrıldı.",
+      },
+    ],
+    roleDetail:
+      "Bu projede art direction'ı üstlendim: marka dilinin kampanya, arayüz ve görsel sistem genelinde tek bir tona indirgenmesinden sorumluydum.",
   },
   {
     id: "ultrand",

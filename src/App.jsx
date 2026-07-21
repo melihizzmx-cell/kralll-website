@@ -73,6 +73,7 @@ export default function App() {
         />
 
         <main className="stage">
+          <h1 className="sr-only">kralll — kişisel fikir evreni</h1>
           <ProjectCloud onSelectProject={setSelectedProject} revealed={hasMoved} />
         </main>
 
@@ -99,7 +100,11 @@ export default function App() {
           </span>
         </motion.footer>
 
-        <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+        <ProjectModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+          onNavigate={setSelectedProject}
+        />
         <SectionPanel
           sectionId={activeSection === "isler" ? null : activeSection}
           onClose={() => setActiveSection("isler")}
