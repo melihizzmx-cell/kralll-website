@@ -2,9 +2,14 @@ import { useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { X } from "lucide-react"
 import { sections } from "../data/sections"
+import { sidebarSections } from "../data/sidebarSections"
+import { hexToRgb, setPanelAccentOverride } from "../context/ThemeEngine"
 
 export default function SectionPanel({ sectionId, onClose }) {
   const data = sectionId ? sections[sectionId] : null
+  const accentColor = sectionId
+    ? sidebarSections.find((s) => s.id === sectionId)?.accentColor
+    : null
 
   useEffect(() => {
     if (!data) return
@@ -20,6 +25,19 @@ export default function SectionPanel({ sectionId, onClose }) {
       document.body.classList.remove("modal-open")
     }
   }, [data, onClose])
+
+  // Panel açıkken accent en yüksek öncelikli kaynak olarak kilitlenir
+  // (bkz. ThemeEngine.jsx öncelik sırası); kapanınca 400-700ms içinde
+  // sakin biçimde serbest bırakılır — imleç hâlâ bir kaynağa yakınsa
+  // resolveAndApply() doğrudan oraya yönelir, önce nötr'e sıçramaz.
+  useEffect(() => {
+    setPanelAccentOverride(data ? accentColor : null)
+    return () => setPanelAccentOverride(null)
+  }, [data, accentColor])
+
+  const [panelAccentR, panelAccentG, panelAccentB] = accentColor
+    ? hexToRgb(accentColor)
+    : []
 
   return (
     <AnimatePresence>
@@ -42,6 +60,10 @@ export default function SectionPanel({ sectionId, onClose }) {
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
+            style={{
+              "--panel-accent": accentColor,
+              "--panel-accent-rgb": `${panelAccentR}, ${panelAccentG}, ${panelAccentB}`,
+            }}
           >
             <button
               type="button"

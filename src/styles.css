@@ -304,22 +304,43 @@ body.modal-open .case-backdrop a {
   gap: 0.7rem;
 }
 
+/* Her sidebar linki, mesafeye bağlı proximity sistemini kendi rengiyle
+   taşıyan bir SidebarLink örneğidir (bkz. SidebarLink.jsx). --sidebar-
+   accent, o öğenin sidebarSections.js'teki accentColor'ı — yalnızca
+   küçük nokta ve aktif durumda kullanılır, harflerde neon glow yok. */
+.sidebar-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-item__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--sidebar-accent, var(--purple-light));
+  flex: 0 0 auto;
+}
+
 .sidebar-link {
   text-align: left;
   font-size: 0.62rem;
   letter-spacing: 0.06em;
   color: rgba(238, 233, 244, 0.42);
-  transition: color 0.5s ease, text-shadow 0.5s ease;
+  transition: color 0.4s ease;
 }
 
-.sidebar-link:hover {
-  color: rgba(238, 233, 244, 0.78);
+.sidebar-link:focus-visible {
+  outline: 1px solid color-mix(in srgb, var(--sidebar-accent, var(--purple-light)) 65%, transparent);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 .sidebar-link--active {
-  color: var(--purple-light);
+  color: var(--sidebar-accent, var(--purple-light));
   font-weight: 600;
-  text-shadow: 0 0 10px rgba(155, 77, 255, 0.5);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--sidebar-accent, var(--purple-light)) 40%, transparent);
 }
 
 .sidebar-toggle {
@@ -593,6 +614,14 @@ body.modal-open .case-backdrop a {
   backdrop-filter: blur(14px);
 }
 
+/* --panel-accent / --panel-accent-rgb, SectionPanel.jsx tarafından
+   açılan bölümün sidebarSections.js'teki accentColor'ıyla inline set
+   edilir (bkz. o dosyadaki useEffect). Panel gövde metinleri nötr kalır;
+   renk yalnızca eyebrow, ince ayırıcılar, timeline/list vurguları, iletişim
+   underline'ı, kapatma ikonu hover'ı ve bu çok hafif ambient glow'da
+   yaşar — panelin kendisi "renkli arayüz"e dönüşmez. ProjectModal gibi
+   accentColor'ı olmayan bir çağrı senaryosunda değişken tanımsız kalır,
+   var(--purple-light) fallback'i eski görünümü korur. */
 .modal-panel {
   position: relative;
   width: 100%;
@@ -602,10 +631,10 @@ body.modal-open .case-backdrop a {
   padding: 2.6rem;
   background: linear-gradient(180deg, #0b0810 0%, #050308 100%);
   border-radius: 2px;
-  box-shadow: 0 0 140px rgba(155, 77, 255, 0.1), 0 30px 80px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  box-shadow: 0 0 140px rgba(var(--panel-accent-rgb, 155, 77, 255), 0.1),
+    0 30px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.03);
   scrollbar-width: thin;
-  scrollbar-color: rgba(155, 77, 255, 0.35) transparent;
+  scrollbar-color: rgba(var(--panel-accent-rgb, 155, 77, 255), 0.35) transparent;
 }
 
 .modal-panel::-webkit-scrollbar {
@@ -617,7 +646,7 @@ body.modal-open .case-backdrop a {
 }
 
 .modal-panel::-webkit-scrollbar-thumb {
-  background: rgba(155, 77, 255, 0.35);
+  background: rgba(var(--panel-accent-rgb, 155, 77, 255), 0.35);
   border-radius: 3px;
 }
 
@@ -636,9 +665,10 @@ body.modal-open .case-backdrop a {
   transition: color 0.3s ease, border-color 0.3s ease;
 }
 
-.modal-close:hover {
-  color: var(--purple-light);
-  border-color: rgba(155, 77, 255, 0.5);
+.modal-close:hover,
+.modal-close:focus-visible {
+  color: var(--panel-accent, var(--purple-light));
+  border-color: rgba(var(--panel-accent-rgb, 155, 77, 255), 0.5);
 }
 
 .modal-eyebrow {
@@ -646,7 +676,7 @@ body.modal-open .case-backdrop a {
   font-size: 0.68rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--purple-light);
+  color: var(--panel-accent, var(--purple-light));
   margin-bottom: 0.9rem;
 }
 
@@ -709,7 +739,7 @@ body.modal-open .case-backdrop a {
 }
 
 .modal-list__meta {
-  color: var(--text-dim);
+  color: color-mix(in srgb, var(--panel-accent, var(--text-dim)) 65%, var(--text-dim) 35%);
   font-size: 0.72rem;
 }
 
@@ -732,7 +762,7 @@ body.modal-open .case-backdrop a {
   font-family: var(--font-mono);
   font-size: 0.66rem;
   letter-spacing: 0.04em;
-  color: var(--purple-light);
+  color: var(--panel-accent, var(--purple-light));
   opacity: 0.85;
 }
 
@@ -754,7 +784,7 @@ body.modal-open .case-backdrop a {
 .modal-quote {
   margin: 0;
   padding-left: 1rem;
-  border-left: 2px solid rgba(155, 77, 255, 0.4);
+  border-left: 2px solid rgba(var(--panel-accent-rgb, 155, 77, 255), 0.4);
   font-size: 0.9rem;
   font-style: italic;
   color: rgba(238, 233, 244, 0.8);
@@ -778,9 +808,9 @@ body.modal-open .case-backdrop a {
 
 .modal-contact__email {
   font-size: 1rem;
-  color: var(--purple-light);
+  color: var(--panel-accent, var(--purple-light));
   width: fit-content;
-  border-bottom: 1px solid rgba(199, 132, 255, 0.4);
+  border-bottom: 1px solid rgba(var(--panel-accent-rgb, 199, 132, 255), 0.4);
 }
 
 .modal-contact__links {
@@ -791,7 +821,7 @@ body.modal-open .case-backdrop a {
 }
 
 .modal-contact__links a:hover {
-  color: var(--purple-light);
+  color: var(--panel-accent, var(--purple-light));
 }
 
 /* -------------------------------------------------------- */
