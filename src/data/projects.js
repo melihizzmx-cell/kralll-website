@@ -45,8 +45,9 @@ export const projects = [
       "İnternet kategorisinde hız, taahhütsüzlük ve simetrik bağlantı gibi güçlü faydalar çoğunlukla benzer ve teknik bir iletişim diliyle anlatılıyor. TurkNet'in ürün mesajlarını daha görünür, hatırlanabilir ve eğlenceli bir dünyaya taşımamız gerekiyordu.",
     insight:
       "Teknik faydalar tek başına dikkat çekmeyebilir; ancak insanların günlük hayatına beklenmedik ve eğlenceli bir biçimde girdiğinde güçlü bir iletişim anına dönüşebilir.",
-    bigIdea:
-      "TurkNet'in güçlü internet faydalarını, evin içine giren üç luchadorun başlattığı büyük bir şova dönüştürmek: TurkNet'le Şov Başlasın.",
+    bigIdeaStatement:
+      "TurkNet'in güçlü internet faydaları, evin içine giren üç luchadorla büyük bir şova dönüştü.",
+    bigIdeaTagline: "TurkNet'le Şov Başlasın.",
 
     charactersText: [
       "Üç luchador, TurkNet'in güçlü, özgür ve enerjik tavrını temsil eden kampanya karakterleri olarak tasarlandı. Meksikalı güreşçilerin gösterişli dünyasını tanıdık bir Türk evinin içine yerleştirmek, kampanyanın absürt mizahını ve görsel karşıtlığını oluşturdu.",
