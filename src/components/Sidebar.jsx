@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Menu, X } from "lucide-react"
+import { sidebarSections } from "../data/sidebarSections"
+import SidebarLink from "./SidebarLink"
 
 const MOBILE_QUERY = "(max-width: 900px)"
-
-const NAV_ITEMS = [
-  { id: "isler", label: "İşlerim" },
-  { id: "hakkimda", label: "Hakkımda" },
-  { id: "notlar", label: "Not Defteri" },
-  { id: "ai-arsiv", label: "AI Arşivi" },
-  { id: "referanslar", label: "Referanslar" },
-  { id: "iletisim", label: "İletişim" },
-]
 
 export default function Sidebar({ activeSection, onSelectSection, revealed }) {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -68,19 +61,13 @@ export default function Sidebar({ activeSection, onSelectSection, revealed }) {
       >
         <div className="sidebar-mark">kralll</div>
         <nav className="sidebar-nav">
-          {NAV_ITEMS.map((item) => (
-            <button
+          {sidebarSections.map((item) => (
+            <SidebarLink
               key={item.id}
-              type="button"
-              className={`sidebar-link ${
-                activeSection === item.id && item.id !== "isler"
-                  ? "sidebar-link--active"
-                  : ""
-              }`}
-              onClick={() => handleSelect(item.id)}
-            >
-              {item.label}
-            </button>
+              item={item}
+              active={activeSection === item.id && item.id !== "isler"}
+              onSelect={handleSelect}
+            />
           ))}
         </nav>
       </motion.aside>

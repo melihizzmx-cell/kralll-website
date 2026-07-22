@@ -277,7 +277,15 @@ export default function FiberAmbience({ paused = false }) {
       if (!Number.isNaN(b)) accent.b = b
     }
     readAccent()
-    const accentTimer = setInterval(readAccent, 320)
+    // reducedMotion: statik kare hiç yeniden çizilmediği için, renk
+    // değişimini (ör. bir SectionPanel kilitlenmesi/sidebar yakınlığı)
+    // yansıtabilmesi için burada açıkça yeniden çiziyoruz. Normal/paused
+    // modda draw() zaten her karede (paused'da da donmuş history'yle)
+    // çalışıp güncel accent'i okuyor, ayrı bir tetikleyiciye gerek yok.
+    const accentTimer = setInterval(() => {
+      readAccent()
+      if (reducedMotion) drawStatic()
+    }, 320)
 
     function clearCanvas() {
       ctx.save()
@@ -383,6 +391,15 @@ export default function FiberAmbience({ paused = false }) {
       const isIdle = pausedRef.current || document.hidden
       if (isIdle) {
         if (idleSince === null) idleSince = now
+        // Panel/case study açıkken (sekme hâlâ görünürken) hareket duruyor
+        // ama donmuş gövdeyi güncel accent ile yeniden boyuyoruz — böylece
+        // "sabit görüntünün tonu bölüm rengine uyum sağlamaya devam etsin"
+        // gerçekleşir. Sekme tamamen gizliyken hiç çizim yapılmıyor.
+        if (!document.hidden && history.length >= 3) {
+          applyLogicalTransform()
+          clearCanvas()
+          strokePolyline(history, cfg.layers, false)
+        }
         rafId = requestAnimationFrame(draw)
         return
       }
