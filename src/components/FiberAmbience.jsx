@@ -1,10 +1,39 @@
-// "Living Fiber Ambience" — ana sayfanın karanlığında çok yavaş akan,
-// düşük opaklıklı ışık damarları. Tamamen statik SVG path'ler + CSS
-// animasyonlarıyla çalışır (stroke-dashoffset akışı + opacity
-// belirip-kaybolma); JS per-frame mantığı, mouse takibi veya canvas
-// yok. Renk, mevcut ThemeEngine'in yazdığı --accent-r/g/b değişkenini
-// doğrudan okur — ikinci bir renk motoru değil, mevcut sistemin sessiz
-// bir tüketicisi.
+// "Living Fiber Ambience" — karanlığın içinde uzanan, uzun ve akışkan
+// fiber-optik ışık hatları. Her hat tek bir uzun cubic-Bézier path;
+// glow canlı CSS blur() ile değil, aynı path'in üç farklı stroke-width/
+// opacity ile üst üste çizilmesiyle (outer/mid/core) elde ediliyor.
+// Işığın hattın başında ve sonunda karanlığa karışması için her hat
+// kendi linearGradient'ini kullanıyor. Renk mevcut --accent-r/g/b'yi
+// doğrudan okur. Koordinatlar, kategori metinlerinin ekran
+// pozisyonlarına göre hesaplanıp (bkz. commit notu) bu bölgelerden
+// kaçınacak şekilde kalibre edildi — her hat 35-80vw uzunluğunda.
+// Tamamen statik: performans karşılaştırması sonrası animasyon
+// bilinçli olarak eklenmedi (bkz. styles.css yorum notu).
+const LINES = [
+  {
+    id: "a",
+    d: "M -60 30 C 180 130, 20 380, 240 520 C 340 590, 200 680, -40 900",
+  },
+  {
+    id: "b",
+    d: "M 1510 70 C 1290 190, 1430 380, 1270 460 C 1140 530, 1300 640, 1190 780",
+  },
+  {
+    id: "c",
+    d: "M 100 800 C 320 850, 550 790, 700 830 C 880 875, 1050 810, 1250 850",
+  },
+  {
+    id: "d",
+    d: "M 1280 -60 C 1400 140, 1140 380, 1300 540 C 1400 650, 1300 800, 1420 900",
+    faint: true,
+  },
+  {
+    id: "e",
+    d: "M 1350 -60 C 1250 150, 1400 320, 1300 480 C 1220 600, 1380 750, 1300 900",
+    wide: true,
+  },
+]
+
 export default function FiberAmbience() {
   return (
     <div className="fiber-ambience" aria-hidden="true">
@@ -13,26 +42,53 @@ export default function FiberAmbience() {
         preserveAspectRatio="xMidYMid slice"
         focusable="false"
       >
-        <path
-          className="fiber-strand fiber-strand--a"
-          d="M -60 120 C 220 40, 60 420, 260 520 C 420 600, 180 760, 320 900"
-        />
-        <path
-          className="fiber-strand fiber-strand--b fiber-strand--fade"
-          d="M 1500 60 C 1230 220, 1420 440, 1220 560 C 1080 640, 1300 780, 1180 940"
-        />
-        <path
-          className="fiber-strand fiber-strand--c"
-          d="M 180 -60 C 520 140, 780 20, 1020 160 C 1220 270, 1380 120, 1500 220"
-        />
-        <path
-          className="fiber-strand fiber-strand--d fiber-strand--fade"
-          d="M -60 780 C 340 900, 760 720, 1040 840 C 1260 930, 1420 820, 1500 880"
-        />
-        <path
-          className="fiber-strand fiber-strand--e"
-          d="M 1120 -60 C 1000 260, 1180 460, 1000 620 C 880 730, 1020 840, 940 940"
-        />
+        <defs>
+          {LINES.map((line) => (
+            <linearGradient
+              key={line.id}
+              id={`fiberGrad-${line.id}`}
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop offset="0%" className="fiber-stop" stopOpacity="0" />
+              <stop offset="16%" className="fiber-stop" stopOpacity="1" />
+              <stop offset="84%" className="fiber-stop" stopOpacity="1" />
+              <stop offset="100%" className="fiber-stop" stopOpacity="0" />
+            </linearGradient>
+          ))}
+        </defs>
+
+        {LINES.map((line) => (
+          <g
+            key={line.id}
+            className={[
+              "fiber-line",
+              `fiber-line--${line.id}`,
+              line.faint && "fiber-line--faint",
+              line.wide && "fiber-line--wide",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            <path
+              className="fiber-layer fiber-layer--outer"
+              d={line.d}
+              stroke={`url(#fiberGrad-${line.id})`}
+            />
+            <path
+              className="fiber-layer fiber-layer--mid"
+              d={line.d}
+              stroke={`url(#fiberGrad-${line.id})`}
+            />
+            <path
+              className="fiber-layer fiber-layer--core"
+              d={line.d}
+              stroke={`url(#fiberGrad-${line.id})`}
+            />
+          </g>
+        ))}
       </svg>
     </div>
   )

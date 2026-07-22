@@ -159,21 +159,30 @@ body.modal-open .case-backdrop a {
   );
 }
 
-/* Living Fiber Ambience — karanlığın içinde çok yavaş akan, düşük
-   opaklıklı ışık damarları. Şekiller sabit (organik eğrili path'ler,
-   yumuşaklık canlı blur yerine ince stroke-width + düşük opaklıktan
-   gelir). Tek hareket kaynağı: yalnızca 2 şeritte, yalnızca opacity
-   üzerinde çalışan çok yavaş bir "nefes alma" döngüsü — compositor-
-   güvenli tek özellik. stroke-dashoffset akışı ve canlı blur/transform
-   denendi, performans testinde ölçülebilir maliyet çıkardığı için
-   bilinçli olarak çıkarıldı (bkz. commit mesajı) — geri kalan 3 şerit
-   tamamen statik. JS per-frame mantığı, mouse takibi, canvas yok. */
+/* Living Fiber Ambience — karanlığın içinde uzanan, uzun ve akışkan
+   fiber-optik ışık hatları (bkz. src/components/FiberAmbience.jsx).
+   Glow canlı filter:blur() İLE DEĞİL, aynı path'in üç stroke-width/
+   opacity katmanıyla (outer/mid/core) üretilir — sabit, ucuz, tek
+   seferlik boyama. Hatlar linearGradient stroke kullanır, böylece
+   başta ve sonda karanlığa karışır.
+
+   BİLİNÇLİ OLARAK TAMAMEN STATİK: Performans karşılaştırması (fiber
+   kapalı / statik / 2 hat hareketli) yapıldı — hareketli sürüm statik
+   sürüme göre ölçülebilir, belirgin bir FPS düşüşü gösterdi. Talimat
+   gereği ("statik ama ThemeEngine'e göre renk değişen fiberler, düşük
+   FPS'li hareketli çözümden daha değerlidir") animasyon tamamen
+   kaldırıldı. Aynı nedenle canlı mask-image de kaldırıldı (ölçülebilir
+   maliyeti vardı) — merkezdeki kategori alanından uzak durma hedefi,
+   path'lerin kendi geometrisi (kenarlara/negatif alana yerleşim) ile
+   sağlanıyor. Renk hâlâ --accent-r/g/b üzerinden anlık güncelleniyor;
+   stroke-dashoffset, canlı blur, hue-rotate hiç kullanılmıyor. */
 .fiber-ambience {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.55;
+  overflow: hidden;
+  opacity: 0.6;
 }
 
 .fiber-ambience svg {
@@ -182,51 +191,41 @@ body.modal-open .case-backdrop a {
   display: block;
 }
 
-.fiber-strand {
+.fiber-stop {
+  stop-color: rgb(var(--accent-r), var(--accent-g), var(--accent-b));
+}
+
+.fiber-layer {
   fill: none;
-  stroke: rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.1);
-  stroke-width: 2.2;
   stroke-linecap: round;
-  stroke-dasharray: 46 72;
 }
 
-.fiber-strand--b {
-  filter: hue-rotate(-18deg);
-  stroke-width: 1.8;
+.fiber-layer--outer {
+  stroke-width: 8;
+  stroke-opacity: 0.02;
 }
 
-.fiber-strand--c {
-  filter: hue-rotate(14deg);
+.fiber-layer--mid {
+  stroke-width: 3.2;
+  stroke-opacity: 0.045;
 }
 
-.fiber-strand--d {
-  filter: hue-rotate(-10deg);
-  stroke-width: 1.7;
+.fiber-layer--core {
+  stroke-width: 1;
+  stroke-opacity: 0.11;
 }
 
-.fiber-strand--e {
-  filter: hue-rotate(20deg);
-  stroke-width: 2;
+.fiber-line--faint {
+  opacity: 0.55;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .fiber-strand--fade {
-    animation: fiber-breathe 28s ease-in-out infinite;
-  }
-
-  .fiber-strand--d.fiber-strand--fade {
-    animation-duration: 33s;
-    animation-delay: -14s;
-  }
+.fiber-line--wide {
+  display: none;
 }
 
-@keyframes fiber-breathe {
-  0%,
-  100% {
-    opacity: 0.22;
-  }
-  50% {
-    opacity: 1;
+@media (min-width: 1400px) {
+  .fiber-line--wide {
+    display: inline;
   }
 }
 
@@ -1342,20 +1341,14 @@ body.modal-open .case-backdrop a {
   }
 
   .fiber-ambience {
-    opacity: 0.32;
+    opacity: 0.3;
   }
 
-  .fiber-strand--d,
-  .fiber-strand--e {
+  /* Mobilde en fazla 3 hat, yalnızca kenarlarda — zaten tamamen
+     statik (bkz. yukarıdaki temel kural, hiç animasyon yok). */
+  .fiber-line--c,
+  .fiber-line--wide {
     display: none;
-  }
-
-  .fiber-strand {
-    animation-duration: 34s !important;
-  }
-
-  .fiber-strand--fade {
-    animation-duration: 34s, 30s !important;
   }
 
   .intro-overlay__text {
