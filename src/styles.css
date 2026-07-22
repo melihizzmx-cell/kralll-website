@@ -343,6 +343,45 @@ body.modal-open .case-backdrop a {
   text-shadow: 0 0 8px color-mix(in srgb, var(--sidebar-accent, var(--purple-light)) 40%, transparent);
 }
 
+/* Masaüstü/geniş tablet görsel ağırlık kalibrasyonu: sidebar "silik
+   yardımcı metin" değil, sakin ama güvenilir bir ana navigasyon gibi
+   hissettirsin. Yalnızca statik tipografi/spacing/genişlik — proximity/
+   renk mekaniği (SidebarLink.jsx, ThemeEngine.jsx) burada değişmiyor.
+   Mobilde (bkz. aşağıdaki max-width:900px bloğu) kasıtlı olarak
+   dokunulmadı; bu yüzden min-width:901px'e kapsandı. */
+@media (min-width: 901px) {
+  .sidebar {
+    width: 172px; /* önceki 148px'ten */
+  }
+
+  .sidebar-nav {
+    gap: 0.8rem; /* önceki 0.7rem'den, ~%14 */
+  }
+
+  .sidebar-item {
+    gap: 0.55rem;
+  }
+
+  .sidebar-item__dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .sidebar-link {
+    font-size: 0.8125rem; /* 13px — önceki 0.62rem/~9.9px'ten */
+    font-weight: 500; /* önceki tanımsız/400'den — bold değil */
+    letter-spacing: 0.045em; /* daha büyük harfte orantılı olarak azaltıldı */
+    padding: 0.4rem 0; /* dokunma hedefini büyütür, satırı rahatlatır */
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebar-link--active {
+    text-shadow: 0 0 9px color-mix(in srgb, var(--sidebar-accent, var(--purple-light)) 46%, transparent);
+  }
+}
+
 .sidebar-toggle {
   display: none;
 }
