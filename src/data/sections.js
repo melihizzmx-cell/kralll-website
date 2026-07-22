@@ -94,19 +94,22 @@ export const sections = {
       { text: "Detaylara karanlıkta bile dikkat eden biri.", meta: "Proje Ortağı" },
     ],
   },
+  // "iletisim" da (hakkimda gibi) kendi içerik bileşenine sahip —
+  // ContactPanelContent.jsx, gerçek iletişim bilgilerini kopyala/mailto
+  // etkileşimiyle birlikte render ediyor (bkz. SectionPanel.jsx).
   iletisim: {
     title: "İletişim",
-    eyebrow: "İletişim",
-    body: [
-      "Yeni bir proje, iş birliği ya da sadece merhaba demek için:",
+    eyebrow: "İLETİŞİM",
+    description: "Yeni bir proje, iş birliği ya da sadece merhaba demek için:",
+    email: "melihsenturkwork@gmail.com",
+    socials: [
+      { label: "Instagram", url: "https://www.instagram.com/mlhsntr/" },
+      { label: "LinkedIn", url: "https://www.linkedin.com/in/melih-%C5%9Fent%C3%BCrk-790b90225/" },
+      { label: "Behance", url: "https://www.behance.net/mlhsntrk" },
     ],
-    contact: {
-      email: "hello@kralll.dev",
-      links: [
-        { label: "Instagram", href: "#" },
-        { label: "LinkedIn", href: "#" },
-        { label: "Behance", href: "#" },
-      ],
+    copyLabels: {
+      idle: "Copy email",
+      success: "Copied.",
     },
   },
 }

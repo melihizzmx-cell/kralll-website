@@ -838,29 +838,126 @@ body.modal-open .case-backdrop a {
   color: var(--text-dim);
 }
 
-.modal-contact {
-  margin-top: 1.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+/* -------------------------------------------------------- */
+/* İletişim paneli                                            */
+/* -------------------------------------------------------- */
+/* Yalnızca sectionId==="iletisim" iken kullanılır (bkz.
+   ContactPanelContent.jsx). Eyebrow/başlık için modal-eyebrow/modal-title
+   sınıfları paylaşılıyor ama .contact-panel içinde skorlanmış override'
+   larla aralarındaki mesafe sıkılaştırılıyor — bu, diğer panellerin
+   (Not Defteri, AI Arşivi, Referanslar) paylaşılan taban kuralını
+   etkilemiyor. */
+.contact-panel .modal-eyebrow {
+  margin-bottom: 0.5rem;
 }
 
-.modal-contact__email {
-  font-size: 1rem;
+.contact-panel .modal-title {
+  margin-bottom: 1.7rem;
+}
+
+.contact-panel__description {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: rgba(238, 233, 244, 0.68);
+  max-width: 36ch;
+  margin: 0 0 2.6rem;
+}
+
+/* E-posta panelin asıl kahramanı — clamp() ile responsive, uzun adres
+   küçük ekranlarda taşmasın diye word-break/overflow-wrap eklendi. */
+.contact-panel__email-block {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.3rem;
+  margin-bottom: 2.8rem;
+}
+
+.contact-panel__email {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(1.15rem, 3.2vw, 1.7rem);
+  line-height: 1.35;
   color: var(--panel-accent, var(--purple-light));
-  width: fit-content;
-  border-bottom: 1px solid rgba(var(--panel-accent-rgb, 199, 132, 255), 0.4);
+  border-bottom: 1px solid rgba(var(--panel-accent-rgb, 155, 77, 255), 0.4);
+  padding-bottom: 0.2rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  transition: border-color 0.3s ease;
 }
 
-.modal-contact__links {
-  display: flex;
-  gap: 1.2rem;
-  font-size: 0.75rem;
+.contact-panel__email:hover,
+.contact-panel__email:focus-visible {
+  border-color: rgba(var(--panel-accent-rgb, 155, 77, 255), 0.9);
+}
+
+.contact-panel__copy {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
   color: var(--text-dim);
+  border: 1px solid rgba(238, 233, 244, 0.16);
+  border-radius: 999px;
+  padding: 0 0.9rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
-.modal-contact__links a:hover {
+.contact-panel__copy:hover,
+.contact-panel__copy:focus-visible {
   color: var(--panel-accent, var(--purple-light));
+  border-color: rgba(var(--panel-accent-rgb, 155, 77, 255), 0.45);
+}
+
+.contact-panel__copy--success {
+  color: var(--panel-accent, var(--purple-light));
+  border-color: rgba(var(--panel-accent-rgb, 155, 77, 255), 0.6);
+}
+
+/* Sosyal linkler: ikinci, daha sakin bir katman — e-postayla yarışmıyor
+   ama tamamen soluk da değil. */
+.contact-panel__socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.8rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid rgba(238, 233, 244, 0.1);
+}
+
+.contact-panel__social {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: rgba(238, 233, 244, 0.55);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border-bottom: 1px solid transparent;
+  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-panel__social:hover,
+.contact-panel__social:focus-visible {
+  color: rgba(238, 233, 244, 0.92);
+  border-color: rgba(var(--panel-accent-rgb, 155, 77, 255), 0.55);
+  transform: translateX(2px);
+}
+
+@media (max-width: 900px) {
+  .contact-panel__email-block {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .contact-panel__socials {
+    flex-direction: column;
+    gap: 1.1rem;
+  }
 }
 
 /* -------------------------------------------------------- */
