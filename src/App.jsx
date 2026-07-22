@@ -3,6 +3,7 @@ import { motion } from "framer-motion"
 import { MouseProvider } from "./context/MouseContext"
 import ThemeEngine from "./context/ThemeEngine"
 import CursorGlow from "./components/CursorGlow"
+import FiberAmbience from "./components/FiberAmbience"
 import Sidebar from "./components/Sidebar"
 import CategoryCloud from "./components/CategoryCloud"
 import ProjectCloud from "./components/ProjectCloud"
@@ -112,6 +113,7 @@ export default function App() {
       <ThemeEngine />
       <div className="app">
         <div className="bg-vignette" aria-hidden="true" />
+        <FiberAmbience />
         <div className="bg-grid" aria-hidden="true" />
         <div className="bg-noise" aria-hidden="true" />
 
