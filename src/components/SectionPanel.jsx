@@ -5,6 +5,7 @@ import { sections } from "../data/sections"
 import { sidebarSections } from "../data/sidebarSections"
 import { hexToRgb, setPanelAccentOverride } from "../context/ThemeEngine"
 import AboutPanelContent from "./AboutPanelContent"
+import ContactPanelContent from "./ContactPanelContent"
 
 export default function SectionPanel({ sectionId, onClose, onNavigate }) {
   const panelScrollRef = useRef(null)
@@ -79,6 +80,8 @@ export default function SectionPanel({ sectionId, onClose, onNavigate }) {
 
             {sectionId === "hakkimda" ? (
               <AboutPanelContent data={data} onOpenContact={onNavigate} scrollRootRef={panelScrollRef} />
+            ) : sectionId === "iletisim" ? (
+              <ContactPanelContent data={data} />
             ) : (
               <>
                 <span className="modal-eyebrow" lang={data.eyebrowLang}>
@@ -122,21 +125,6 @@ export default function SectionPanel({ sectionId, onClose, onNavigate }) {
                         <cite>{quote.meta}</cite>
                       </blockquote>
                     ))}
-                  </div>
-                )}
-
-                {data.contact && (
-                  <div className="modal-contact">
-                    <a className="modal-contact__email" href={`mailto:${data.contact.email}`}>
-                      {data.contact.email}
-                    </a>
-                    <div className="modal-contact__links">
-                      {data.contact.links.map((link) => (
-                        <a key={link.label} href={link.href}>
-                          {link.label}
-                        </a>
-                      ))}
-                    </div>
                   </div>
                 )}
               </>
