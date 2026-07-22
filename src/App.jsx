@@ -113,7 +113,7 @@ export default function App() {
       <ThemeEngine />
       <div className="app">
         <div className="bg-vignette" aria-hidden="true" />
-        <FiberAmbience />
+        <FiberAmbience paused={!!selectedProject || activeSection !== "isler"} />
         <div className="bg-grid" aria-hidden="true" />
         <div className="bg-noise" aria-hidden="true" />
 

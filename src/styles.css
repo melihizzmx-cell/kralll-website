@@ -159,26 +159,25 @@ body.modal-open .case-backdrop a {
   );
 }
 
-/* Living Fiber Ambience — karanlığın içinde dolaşan, uzun ve akışkan
-   fiber-optik ışık hatları (bkz. src/components/FiberAmbience.jsx).
-   Glow canlı filter:blur() İLE DEĞİL, aynı path'in üç stroke-width/
-   opacity katmanıyla (outer/mid/core) üretilir — sabit, ucuz, tek
-   seferlik boyama. Hatlar linearGradient stroke kullanır, böylece
-   başta ve sonda karanlığa karışır.
+/* Living Fiber Ambience — karanlığın içinde gerçekten dolaşan, tek
+   parça bir neon yılan/fiber hattı (bkz. src/components/FiberAmbience.jsx).
+   Baş/gövde/kuyruk sistemi tek bir full-screen <canvas> üzerinde elle
+   requestAnimationFrame ile çiziliyor — React state her karede
+   güncellenmiyor, path morphing/shader/harici kütüphane yok. Glow canlı
+   filter:blur() İLE DEĞİL, aynı gövdenin üç stroke-width/opacity
+   katmanıyla (outer/mid/core) üretilir.
 
-   RENK: iki katmanlı sistem. Her hattın (.fiber-stop--N) sabit bir
-   baz tonu var; bu ton CSS color-mix() ile canlı --accent-r/g/b
-   değişkeniyle %70/%30 karıştırılıyor — ikinci bir renk motoru değil,
-   salt CSS fonksiyonu, ThemeEngine'e hiç dokunulmuyor.
+   RENK: iki katmanlı sistem. Gövde boyunca sabit 4 renkli bir gradient
+   (violet→mavi→cyan→magenta) var; bu, canlı --accent-r/g/b (ThemeEngine)
+   değişkeniyle JS içinde %25 oranında karıştırılıyor — ikinci bir renk
+   motoru değil, mevcut CSS değişkenlerinin düşük frekansta okunup lerp
+   edilmesi.
 
-   HAREKET: yalnızca 3 hatta (.fiber-line--roam), yalnızca transform+
-   opacity, tek paylaşılan @keyframes + CSS custom property ile farklı
-   genlik/süre/gecikme. 4. hat (en silik) tamamen statik. Önceki
-   turda canlı mask-image ölçülebilir maliyet çıkardığı için
-   kaldırılmıştı; bu sürümde de mask yok — merkezdeki kategori
-   alanından uzak durma hedefi tamamen path geometrisiyle (sürüklenme
-   payı dahil hesaplanmış) sağlanıyor. stroke-dashoffset, canlı blur,
-   path morphing, canvas hiç kullanılmıyor. */
+   HAREKET: baş, kapalı bir Catmull-Rom rotası üzerinde zaman bazlı sabit
+   hızla ilerliyor; kuyruk, başın son konumlarından (point history)
+   oluşuyor. Reduced-motion'da tüm hareket durur, tek statik ve çok düşük
+   opaklıklı bir kare kalır (canvas içinde, bkz. bileşen). Mobilde daha
+   kısa gövde/daha düşük çözünürlük/daha yavaş döngü kullanılır. */
 .fiber-ambience {
   position: fixed;
   inset: 0;
@@ -188,131 +187,10 @@ body.modal-open .case-backdrop a {
   opacity: 0.65;
 }
 
-.fiber-ambience svg {
+.fiber-ambience canvas {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
-}
-
-.fiber-stop--1 {
-  stop-color: color-mix(
-    in srgb,
-    #9b6bff 70%,
-    rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%
-  );
-}
-
-.fiber-stop--2 {
-  stop-color: color-mix(
-    in srgb,
-    #4d8cff 70%,
-    rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%
-  );
-}
-
-.fiber-stop--3 {
-  stop-color: color-mix(
-    in srgb,
-    #4dd9ff 70%,
-    rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%
-  );
-}
-
-.fiber-stop--4 {
-  stop-color: color-mix(
-    in srgb,
-    #c56bff 70%,
-    rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%
-  );
-}
-
-.fiber-layer {
-  fill: none;
-  stroke-linecap: round;
-}
-
-.fiber-layer--outer {
-  stroke-width: 8;
-  stroke-opacity: 0.025;
-}
-
-.fiber-layer--mid {
-  stroke-width: 3.2;
-  stroke-opacity: 0.055;
-}
-
-.fiber-layer--core {
-  stroke-width: 1;
-  stroke-opacity: 0.13;
-}
-
-/* Görünürlük hiyerarşisi: 1=ana (en görünür) -> 4=en silik. Her hat
-   kendi --fiber-visibility çarpanını tanımlar; hem statik/reduced-
-   motion opacity'si hem de aşağıdaki fiber-roam animasyonunun opacity
-   salınımı bu çarpanı kullanır — böylece hareket sırasında da hiyerarşi
-   korunur (animasyonun kendi opacity'si hiyerarşiyi ezmez). */
-.fiber-line--1 {
-  --fiber-visibility: 1;
-  opacity: var(--fiber-visibility);
-}
-
-.fiber-line--2 {
-  --fiber-visibility: 0.68;
-  opacity: var(--fiber-visibility);
-}
-
-.fiber-line--3 {
-  --fiber-visibility: 0.42;
-  opacity: var(--fiber-visibility);
-}
-
-.fiber-line--faint {
-  --fiber-visibility: 0.28;
-  opacity: var(--fiber-visibility);
-}
-
-@media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
-  .fiber-line--roam {
-    transform-box: fill-box;
-    transform-origin: 50% 50%;
-    will-change: transform, opacity;
-    animation: fiber-roam var(--roam-duration, 45s) cubic-bezier(0.45, 0, 0.55, 1)
-      infinite;
-    animation-delay: var(--roam-delay, 0s);
-  }
-
-  .fiber-line--1.fiber-line--roam {
-    --roam-x: 38px;
-    --roam-y: -32px;
-    --roam-duration: 38s;
-    --roam-delay: 0s;
-  }
-
-  .fiber-line--2.fiber-line--roam {
-    --roam-x: -34px;
-    --roam-y: 28px;
-    --roam-duration: 47s;
-    --roam-delay: -14s;
-  }
-
-  .fiber-line--3.fiber-line--roam {
-    --roam-x: 30px;
-    --roam-y: 36px;
-    --roam-duration: 55s;
-    --roam-delay: -27s;
-  }
-}
-
-@keyframes fiber-roam {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: calc(var(--fiber-visibility, 1) * 0.72);
-  }
-  50% {
-    transform: translate3d(var(--roam-x, 0), var(--roam-y, 0), 0) scale(1.008);
-    opacity: calc(var(--fiber-visibility, 1) * 1);
-  }
 }
 
 .bg-noise {
@@ -1427,14 +1305,7 @@ body.modal-open .case-backdrop a {
   }
 
   .fiber-ambience {
-    opacity: 0.32;
-  }
-
-  /* Mobilde yalnızca ana hat (1) + çok silik yardımcı hat (4),
-     ikisi de statik (roam animasyonu zaten min-width:901px'e bağlı). */
-  .fiber-line--2,
-  .fiber-line--3 {
-    display: none;
+    opacity: 0.5;
   }
 
   .intro-overlay__text {
