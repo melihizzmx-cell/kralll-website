@@ -877,14 +877,25 @@ body.modal-open .case-backdrop a {
 
 .case-statement {
   font-family: var(--font-serif);
-  font-style: italic;
   font-weight: 500;
-  font-size: clamp(1.4rem, 3.2vw, 2.15rem);
-  line-height: 1.35;
+  font-style: normal;
+  font-size: clamp(1.9rem, 3vw, 2.9rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
   text-align: center;
-  max-width: 620px;
+  max-width: 1000px;
   margin: 0 auto;
   color: var(--text-main);
+}
+
+.case-statement__line {
+  display: block;
+}
+
+.case-statement__line--tagline {
+  font-style: italic;
+  margin-top: 0.4em;
+  color: rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.88);
 }
 
 .case-section--center {
@@ -997,9 +1008,38 @@ body.modal-open .case-backdrop a {
   gap: 2.2rem;
 }
 
+/* Metin bölümleri (dar 680px kolon) ile medya bölümleri (.study-outputs,
+   960px) aynı sol kenara hizalansın diye paylaştıkları ortak dış grid.
+   Yalnızca bunu ihtiyaç duyan bölümlerde (Big Idea / Messages / AI in the
+   Process) kullanılır — diğer .study-body kullanımları (Campaign+Role,
+   Challenge+Insight, Characters metni, CompactCaseStudy) değişmeden kalır. */
+.study-body--wide {
+  max-width: 960px;
+}
+
+/* .study-body--wide içinde okunabilirlik için metni tekrar dar bir
+   ölçüye (680px) sabitler, ama merkeze almadan — sol kenar üstteki
+   960px kutuyla hizalı kalır. */
+.study-copy {
+  max-width: 680px;
+}
+
 .case-section--flush {
   border-top: none;
   padding-top: 0;
+}
+
+.study-body--bigidea {
+  padding-top: 11rem;
+  padding-bottom: 11rem;
+}
+
+.study-body--bigidea .case-section__label {
+  margin-bottom: 2.4rem;
+}
+
+.study-body--messages {
+  margin-top: 6.8rem;
 }
 
 .study-outputs {
@@ -1017,14 +1057,14 @@ body.modal-open .case-backdrop a {
   text-transform: uppercase;
   color: var(--purple-light);
   opacity: 0.85;
-  margin-bottom: 1.6rem;
+  margin-bottom: 2rem;
 }
 
 .study-outputs__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   align-items: start;
-  gap: 2.4rem 2rem;
+  gap: 2.4rem 1.75rem;
 }
 
 .study-output {
@@ -1056,24 +1096,27 @@ body.modal-open .case-backdrop a {
   background: var(--bg);
 }
 
+.study-body--messages .case-section__label {
+  margin-bottom: 1.9rem;
+}
+
 .case-messages {
   list-style: none;
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
+  padding: 0 0 1.9rem;
+  max-width: 1000px;
 }
 
 .case-messages__item {
   display: flex;
   align-items: baseline;
-  gap: 1rem;
+  gap: 1.3rem;
   font-family: var(--font-mono);
-  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-size: clamp(1.5rem, 2.2vw, 2.25rem);
   color: var(--text-main);
-  padding-top: 1.1rem;
-  border-top: 1px solid rgba(238, 233, 244, 0.08);
+  padding-top: 1.9rem;
+  padding-bottom: 1.9rem;
+  border-top: 1px solid rgba(238, 233, 244, 0.06);
 }
 
 .case-messages__item:first-child {
@@ -1081,11 +1124,17 @@ body.modal-open .case-backdrop a {
   border-top: none;
 }
 
+.case-messages__item:last-child {
+  padding-bottom: 0;
+}
+
 .case-messages__index {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  color: rgb(var(--accent-r), var(--accent-g), var(--accent-b));
-  min-width: 1.4em;
+  flex-shrink: 0;
+  width: 2ch;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.65);
 }
 
 .study-next {
@@ -1237,6 +1286,31 @@ body.modal-open .case-backdrop a {
     height: auto;
     min-height: 0;
     aspect-ratio: 4 / 5;
+  }
+
+  .case-statement {
+    font-size: clamp(1.15rem, 5vw, 1.3rem);
+    line-height: 1.18;
+  }
+
+  .study-body--bigidea {
+    padding-top: 6.2rem;
+    padding-bottom: 6.2rem;
+  }
+
+  .study-outputs__grid {
+    gap: 1.1rem;
+  }
+
+  .study-body--messages {
+    margin-top: 4.5rem;
+  }
+
+  .case-messages__item {
+    font-size: clamp(1.3rem, 4.5vw, 1.65rem);
+    gap: 0.9rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
   }
 
   .category-cloud {

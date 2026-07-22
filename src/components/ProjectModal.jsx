@@ -235,12 +235,17 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
       </div>
 
       {/* 4. Big Idea */}
-      <div className="study-body">
-        <div className="case-section case-section--center">
+      <div className="study-body study-body--wide study-body--bigidea">
+        <div className="case-section case-section--center case-section--flush">
           <span className="case-section__label" lang="en">
             Big Idea
           </span>
-          <p className="case-statement">{project.bigIdea}</p>
+          <p className="case-statement">
+            <span className="case-statement__line">{project.bigIdeaStatement}</span>
+            <span className="case-statement__line case-statement__line--tagline">
+              {project.bigIdeaTagline}
+            </span>
+          </p>
         </div>
       </div>
 
@@ -286,7 +291,7 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
         </div>
       </div>
 
-      <div className="study-body">
+      <div className="study-body study-body--wide study-body--messages">
         <div className="case-section case-section--flush">
           <span className="case-section__label" lang="en">
             Messages
@@ -311,8 +316,8 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
       </div>
 
       {/* 8. Extensions + Process */}
-      <div className="study-body">
-        <div className="case-section case-section--flush">
+      <div className="study-body study-body--wide">
+        <div className="case-section case-section--flush study-copy">
           <span className="case-section__label" lang="en">
             AI in the Process
           </span>
