@@ -1,11 +1,13 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { X } from "lucide-react"
 import { sections } from "../data/sections"
 import { sidebarSections } from "../data/sidebarSections"
 import { hexToRgb, setPanelAccentOverride } from "../context/ThemeEngine"
+import AboutPanelContent from "./AboutPanelContent"
 
-export default function SectionPanel({ sectionId, onClose }) {
+export default function SectionPanel({ sectionId, onClose, onNavigate }) {
+  const panelScrollRef = useRef(null)
   const data = sectionId ? sections[sectionId] : null
   const accentColor = sectionId
     ? sidebarSections.find((s) => s.id === sectionId)?.accentColor
@@ -51,7 +53,8 @@ export default function SectionPanel({ sectionId, onClose }) {
           onClick={onClose}
         >
           <motion.div
-            className="modal-panel"
+            ref={panelScrollRef}
+            className={`modal-panel ${sectionId === "hakkimda" ? "modal-panel--about" : ""}`}
             role="dialog"
             aria-modal="true"
             aria-label={data.title}
@@ -74,63 +77,69 @@ export default function SectionPanel({ sectionId, onClose }) {
               <X size={18} strokeWidth={1.5} />
             </button>
 
-            <span className="modal-eyebrow" lang={data.eyebrowLang}>
-              {data.eyebrow}
-            </span>
-            <h2 className="modal-title modal-title--sm">{data.title}</h2>
+            {sectionId === "hakkimda" ? (
+              <AboutPanelContent data={data} onOpenContact={onNavigate} scrollRootRef={panelScrollRef} />
+            ) : (
+              <>
+                <span className="modal-eyebrow" lang={data.eyebrowLang}>
+                  {data.eyebrow}
+                </span>
+                <h2 className="modal-title modal-title--sm">{data.title}</h2>
 
-            {data.body?.map((paragraph, i) => (
-              <p className="modal-body" key={i}>
-                {paragraph}
-              </p>
-            ))}
-
-            {data.list && (
-              <ul className="modal-list">
-                {data.list.map((item, i) => (
-                  <li key={i} className="modal-list__item">
-                    <span>{item.title}</span>
-                    <span className="modal-list__meta">{item.meta}</span>
-                  </li>
+                {data.body?.map((paragraph, i) => (
+                  <p className="modal-body" key={i}>
+                    {paragraph}
+                  </p>
                 ))}
-              </ul>
-            )}
 
-            {data.timeline && (
-              <div className="modal-timeline">
-                {data.timeline.map((item, i) => (
-                  <div className="modal-timeline__row" key={i}>
-                    <span className="modal-timeline__year">{item.year}</span>
-                    <span className="modal-timeline__text">{item.text}</span>
+                {data.list && (
+                  <ul className="modal-list">
+                    {data.list.map((item, i) => (
+                      <li key={i} className="modal-list__item">
+                        <span>{item.title}</span>
+                        <span className="modal-list__meta">{item.meta}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {data.timeline && (
+                  <div className="modal-timeline">
+                    {data.timeline.map((item, i) => (
+                      <div className="modal-timeline__row" key={i}>
+                        <span className="modal-timeline__year">{item.year}</span>
+                        <span className="modal-timeline__text">{item.text}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
+                )}
 
-            {data.quotes && (
-              <div className="modal-quotes">
-                {data.quotes.map((quote, i) => (
-                  <blockquote key={i} className="modal-quote">
-                    “{quote.text}”
-                    <cite>{quote.meta}</cite>
-                  </blockquote>
-                ))}
-              </div>
-            )}
+                {data.quotes && (
+                  <div className="modal-quotes">
+                    {data.quotes.map((quote, i) => (
+                      <blockquote key={i} className="modal-quote">
+                        “{quote.text}”
+                        <cite>{quote.meta}</cite>
+                      </blockquote>
+                    ))}
+                  </div>
+                )}
 
-            {data.contact && (
-              <div className="modal-contact">
-                <a className="modal-contact__email" href={`mailto:${data.contact.email}`}>
-                  {data.contact.email}
-                </a>
-                <div className="modal-contact__links">
-                  {data.contact.links.map((link) => (
-                    <a key={link.label} href={link.href}>
-                      {link.label}
+                {data.contact && (
+                  <div className="modal-contact">
+                    <a className="modal-contact__email" href={`mailto:${data.contact.email}`}>
+                      {data.contact.email}
                     </a>
-                  ))}
-                </div>
-              </div>
+                    <div className="modal-contact__links">
+                      {data.contact.links.map((link) => (
+                        <a key={link.label} href={link.href}>
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </motion.div>
         </motion.div>

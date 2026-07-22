@@ -864,6 +864,212 @@ body.modal-open .case-backdrop a {
 }
 
 /* -------------------------------------------------------- */
+/* Hakkımda paneli (editoryal düzen)                          */
+/* -------------------------------------------------------- */
+/* Yalnızca sectionId==="hakkimda" iken kullanılır (bkz.
+   AboutPanelContent.jsx). Diğer panellerin dar 560px genel-amaçlı
+   genişliğinden farklı olarak, iki kolonlu editoryal grid'e yer açmak
+   için modal-panel bu değişkeni genişletiyor — kart/panel arka planı,
+   köşe yuvarlama, glow gibi temel görünüm modal-panel'den miras kalıyor. */
+.modal-panel--about {
+  max-width: 920px;
+  padding: 3rem 3.4rem;
+}
+
+.about-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 3.4rem;
+}
+
+.about-panel__top {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.4rem;
+}
+
+.about-panel__intro-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.about-panel__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
+  line-height: 1.14;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.about-panel__title-line {
+  display: block;
+}
+
+.about-panel__title-accent {
+  color: var(--panel-accent, var(--purple-light));
+}
+
+.about-panel__bio {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: rgba(238, 233, 244, 0.72);
+  max-width: 46ch;
+}
+
+.about-panel__bio p {
+  margin: 0 0 1.1rem;
+}
+
+.about-panel__bio p:last-child {
+  margin-bottom: 0;
+}
+
+.about-panel__section-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  opacity: 0.75;
+  margin-bottom: 1.3rem;
+}
+
+/* Klasik dikey CV çizgisi değil — büyük yıl + kısa metinden oluşan
+   kırık 2 sütunlu bir grid. */
+.about-panel__timeline {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.8rem 2rem;
+}
+
+.about-panel__timeline-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.about-panel__timeline-year {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--panel-accent, var(--purple-light));
+}
+
+.about-panel__timeline-text {
+  font-size: 0.74rem;
+  line-height: 1.55;
+  color: rgba(238, 233, 244, 0.66);
+  max-width: 26ch;
+}
+
+.about-panel__principle-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-panel__principle {
+  display: flex;
+  align-items: baseline;
+  gap: 1.6rem;
+  padding: 1.3rem 0;
+  border-top: 1px solid rgba(238, 233, 244, 0.1);
+  transition: border-color 0.4s ease;
+}
+
+.about-panel__principle:last-child {
+  border-bottom: 1px solid rgba(238, 233, 244, 0.1);
+}
+
+.about-panel__principle:hover {
+  border-color: rgba(var(--panel-accent-rgb, 155, 77, 255), 0.4);
+}
+
+.about-panel__principle-index {
+  flex: 0 0 auto;
+  width: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: rgba(238, 233, 244, 0.35);
+  transition: color 0.4s ease;
+}
+
+.about-panel__principle:hover .about-panel__principle-index {
+  color: var(--panel-accent, var(--purple-light));
+}
+
+.about-panel__principle-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.08rem;
+  color: rgba(238, 233, 244, 0.85);
+}
+
+.about-panel__currently-list {
+  list-style: none;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.about-panel__currently-list li {
+  font-size: 0.84rem;
+  color: rgba(238, 233, 244, 0.72);
+}
+
+.about-panel__status {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  opacity: 0.85;
+}
+
+.about-panel__cta {
+  padding-top: 2.2rem;
+  border-top: 1px solid rgba(238, 233, 244, 0.1);
+}
+
+.about-panel__cta-line {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--text-main);
+  margin: 0 0 0.6rem;
+}
+
+.about-panel__cta-trigger {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--panel-accent, var(--purple-light));
+  border-bottom: 1px solid rgba(var(--panel-accent-rgb, 155, 77, 255), 0.45);
+  padding-bottom: 0.15rem;
+  transition: border-color 0.3s ease;
+}
+
+.about-panel__cta-trigger:hover,
+.about-panel__cta-trigger:focus-visible {
+  border-color: rgba(var(--panel-accent-rgb, 155, 77, 255), 0.9);
+}
+
+@media (min-width: 901px) {
+  .about-panel__top {
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: start;
+    gap: 3.6rem;
+  }
+
+  .about-panel__timeline {
+    margin-top: 0.4rem;
+  }
+}
+
+/* -------------------------------------------------------- */
 /* Case study (proje modalı)                                  */
 /* -------------------------------------------------------- */
 .case-backdrop {
@@ -1283,6 +1489,19 @@ body.modal-open .case-backdrop a {
 /* Responsive                                                 */
 /* -------------------------------------------------------- */
 @media (max-width: 900px) {
+  .modal-panel--about {
+    padding: 2.2rem 1.8rem;
+  }
+
+  .about-panel {
+    gap: 2.6rem;
+  }
+
+  .about-panel__timeline {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+
   .cursor-glow,
   .cursor-dot {
     display: none;

@@ -195,6 +195,7 @@ export default function App() {
         <SectionPanel
           sectionId={activeSection === "isler" ? null : activeSection}
           onClose={() => setActiveSection("isler")}
+          onNavigate={setActiveSection}
         />
 
         <IntroOverlay visible={!hasMoved} />
