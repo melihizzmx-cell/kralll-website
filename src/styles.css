@@ -1940,3 +1940,118 @@ body.modal-open .case-backdrop a {
     font-size: 2.4rem;
   }
 }
+
+/* -------------------------------------------------------- */
+/* Traveling edge glow — açılan frame'in çevresinde tek turluk  */
+/* fiber-optik ışık çizgisi (EdgeGlow.jsx)                     */
+/* -------------------------------------------------------- */
+/* .modal-backdrop zaten position:fixed olduğu için pozisyon
+   bağlamı sağlıyor; .edge-glow onun içine sibling olarak, panelden
+   SONRA render edilip üstüne "boyanır". case-close/modal-close'un
+   (z-index 52 / kendi stacking'i) altında kalır ki köşedeki kapatma
+   düğmesi her zaman net görünsün. */
+.edge-glow {
+  position: absolute;
+  z-index: 51;
+  pointer-events: none;
+}
+
+.edge-glow svg {
+  display: block;
+}
+
+.edge-glow__contour {
+  stroke: rgba(2, 1, 4, 0.5);
+  stroke-width: 2.8;
+  vector-effect: non-scaling-stroke;
+}
+
+.edge-glow__base {
+  stroke-width: 1.2;
+  stroke-opacity: 0.3;
+  vector-effect: non-scaling-stroke;
+}
+
+.edge-glow__lap {
+  animation-name: edge-glow-fade-in;
+  animation-duration: 220ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.edge-glow__lap-contour,
+.edge-glow__glow-wide,
+.edge-glow__tail,
+.edge-glow__head {
+  animation-name: edge-glow-travel;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  vector-effect: non-scaling-stroke;
+}
+
+.edge-glow__lap-contour {
+  stroke: rgba(2, 1, 4, 0.6);
+  stroke-width: 3.6;
+}
+
+.edge-glow__glow-wide {
+  stroke-opacity: 0.1;
+}
+
+.edge-glow__tail {
+  stroke-width: 2.4;
+  stroke-opacity: 0.36;
+}
+
+.edge-glow__head {
+  stroke-width: 1.5;
+  stroke-opacity: 0.95;
+  stroke-linecap: round;
+}
+
+@keyframes edge-glow-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes edge-glow-travel {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: calc(-1 * var(--edge-glow-perimeter));
+  }
+}
+
+@media (max-width: 900px) {
+  .edge-glow__base {
+    stroke-opacity: 0.24;
+  }
+
+  .edge-glow__glow-wide {
+    stroke-opacity: 0.07;
+  }
+
+  .edge-glow__tail {
+    stroke-opacity: 0.28;
+  }
+
+  .edge-glow__head {
+    stroke-opacity: 0.8;
+  }
+
+  .edge-glow__contour {
+    stroke-width: 2.3;
+  }
+
+  .edge-glow__lap-contour {
+    stroke-width: 2.9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edge-glow__lap {
+    display: none;
+  }
+}

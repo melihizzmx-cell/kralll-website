@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useCaseVideoAutoplay } from "../lib/useCaseVideoAutoplay"
 import { ArrowRight, X } from "lucide-react"
 import { projects } from "../data/projects"
+import EdgeGlow from "./EdgeGlow"
 import CaseChapterNav from "./CaseChapterNav"
 import {
   casePanelVariants,
@@ -62,53 +63,63 @@ export default function ProjectModal({ project, onClose, onNavigate }) {
   const reduced = prefersReducedMotion()
 
   return (
-    <AnimatePresence>
-      {project && (
-        <motion.div
-          ref={scrollRef}
-          className="case-backdrop"
-          role="dialog"
-          aria-modal="true"
-          aria-label={project.title}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          onClick={onClose}
-        >
-          <button type="button" className="case-close" onClick={onClose} aria-label="Kapat">
-            <X size={18} strokeWidth={1.5} />
-          </button>
-
+    <>
+      <AnimatePresence>
+        {project && (
           <motion.div
-            key={project.id}
-            className="case-panel"
-            variants={reduced ? reducedCasePanelVariants : casePanelVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            onClick={(e) => e.stopPropagation()}
+            ref={scrollRef}
+            className="case-backdrop"
+            role="dialog"
+            aria-modal="true"
+            aria-label={project.title}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            onClick={onClose}
           >
-            {project.caseStudy ? (
-              <FullCaseStudy
-                project={project}
-                font={titleFont[project.style] ?? titleFont.hand}
-                nextProject={nextProject}
-                onNavigate={onNavigate}
-                reduced={reduced}
-                scrollRootRef={scrollRef}
-              />
-            ) : (
-              <CompactCaseStudy
-                project={project}
-                font={titleFont[project.style] ?? titleFont.hand}
-                reduced={reduced}
-              />
-            )}
+            <button type="button" className="case-close" onClick={onClose} aria-label="Kapat">
+              <X size={18} strokeWidth={1.5} />
+            </button>
+
+            <motion.div
+              key={project.id}
+              className="case-panel"
+              variants={reduced ? reducedCasePanelVariants : casePanelVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {project.caseStudy ? (
+                <FullCaseStudy
+                  project={project}
+                  font={titleFont[project.style] ?? titleFont.hand}
+                  nextProject={nextProject}
+                  onNavigate={onNavigate}
+                  reduced={reduced}
+                  scrollRootRef={scrollRef}
+                />
+              ) : (
+                <CompactCaseStudy
+                  project={project}
+                  font={titleFont[project.style] ?? titleFont.hand}
+                  reduced={reduced}
+                />
+              )}
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+
+      <EdgeGlow
+        fullscreen
+        accentColor={project?.accentColor}
+        radius={0}
+        active={!!project}
+        triggerKey={project?.id}
+      />
+    </>
   )
 }
 
