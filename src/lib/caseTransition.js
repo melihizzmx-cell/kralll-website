@@ -90,3 +90,22 @@ export const heroGlowVariants = {
     transition: { duration: 0.5, ease: EASE, delay: 0.18 },
   },
 }
+
+// Sticky chapter/sekme navigasyonunun (bkz. CaseChapterNav.jsx) paneldeki
+// doğal konumundan 8-12px yukarıdan hafifçe belirmesi için. Panelin kendi
+// açılışından (casePanelVariants, 0.5s) az bir gecikmeyle başlar, böylece
+// içerik yüzeyi bir anda "kart gibi" belirmek yerine nav biraz sonra
+// süzülerek üstüne oturur.
+export const chapterNavVariants = {
+  initial: { opacity: 0, y: -10 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: EASE, delay: 0.25 },
+  },
+}
+
+export const reducedChapterNavVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.3 } },
+}

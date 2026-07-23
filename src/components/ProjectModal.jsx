@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useCaseVideoAutoplay } from "../lib/useCaseVideoAutoplay"
 import { ArrowRight, X } from "lucide-react"
 import { projects } from "../data/projects"
+import CaseChapterNav from "./CaseChapterNav"
 import {
   casePanelVariants,
   reducedCasePanelVariants,
@@ -95,6 +96,7 @@ export default function ProjectModal({ project, onClose, onNavigate }) {
                 nextProject={nextProject}
                 onNavigate={onNavigate}
                 reduced={reduced}
+                scrollRootRef={scrollRef}
               />
             ) : (
               <CompactCaseStudy
@@ -183,7 +185,7 @@ function CaseVideo({ src, poster }) {
   )
 }
 
-function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
+function FullCaseStudy({ project, font, nextProject, onNavigate, reduced, scrollRootRef }) {
   const { media } = project
 
   return (
@@ -202,8 +204,10 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
 
       <CaseHeader project={project} font={font} reduced={reduced} />
 
+      <CaseChapterNav scrollRootRef={scrollRootRef} reduced={reduced} />
+
       {/* 2. Campaign in One Sentence + My Role */}
-      <div className="study-body">
+      <div className="study-body" id="overview">
         <div className="case-section case-section--flush">
           <span className="case-section__label" lang="en">
             The Campaign
@@ -235,7 +239,7 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
       </div>
 
       {/* 4. Big Idea */}
-      <div className="study-body study-body--wide study-body--bigidea">
+      <div className="study-body study-body--wide study-body--bigidea" id="idea">
         <div className="case-section case-section--center case-section--flush">
           <span className="case-section__label" lang="en">
             Big Idea
@@ -250,7 +254,7 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
       </div>
 
       {/* 5. Characters & Art Direction */}
-      <div className="study-body">
+      <div className="study-body" id="visual-world">
         <div className="case-section case-section--flush">
           <span className="case-section__label" lang="en">
             Characters &amp; Art Direction
@@ -278,7 +282,7 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
       </div>
 
       {/* 6. Campaign Visuals & Messages */}
-      <div className="study-outputs">
+      <div className="study-outputs" id="activation">
         <span className="study-outputs__label" lang="en">
           Campaign Visuals
         </span>
@@ -308,7 +312,7 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
       </div>
 
       {/* 7. Film / Motion */}
-      <div className="study-outputs">
+      <div className="study-outputs" id="film">
         <span className="study-outputs__label" lang="en">
           Film / Motion
         </span>
@@ -316,7 +320,7 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
       </div>
 
       {/* 8. Extensions + Process */}
-      <div className="study-body study-body--wide">
+      <div className="study-body study-body--wide" id="credits">
         <div className="case-section case-section--flush study-copy">
           <span className="case-section__label" lang="en">
             AI in the Process
@@ -324,6 +328,12 @@ function FullCaseStudy({ project, font, nextProject, onNavigate, reduced }) {
           <p className="case-section__text">{project.aiProcess}</p>
         </div>
       </div>
+
+      {/* Credits kısa ve sayfanın en altına yakın olduğu için, normal
+          rootMargin'li aktif-bölüm alanına hiç girmeden sayfanın sonuna
+          ulaşılabiliyor — bu sentinel, en alta gelindiğinde CaseChapterNav'ın
+          son bölümü (Credits) zorla aktif işaretlemesi için. */}
+      <div id="case-chapter-nav-end" aria-hidden="true" />
 
       {nextProject && (
         <button type="button" className="study-next" onClick={() => onNavigate?.(nextProject)}>
