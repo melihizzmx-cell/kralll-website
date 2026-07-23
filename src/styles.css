@@ -1169,12 +1169,34 @@ body.modal-open .case-backdrop a {
 /* -------------------------------------------------------- */
 /* Case study (proje modalı)                                  */
 /* -------------------------------------------------------- */
+/* Ana sayfadan bir ton daha koyu + kenarlarda/üstte çok hafif proje
+   accentColor glow'u — "ayrı bir proje katmanına girdim" hissi burada
+   kuruluyor. Fiber/snake katmanı zaten bu opak arka planın altında kalıp
+   tamamen kayboluyor (bkz. FiberAmbience.jsx — pause'da bile boyamaya
+   devam ediyor ama bu katman onu görünmez kılıyor, ekstra bir kapatma
+   mantığı gerekmiyor). Kart/rounded-container yok — tam ekran, sınırsız
+   bir yüzey. */
 .case-backdrop {
   position: fixed;
   inset: 0;
   z-index: 50;
   overflow-y: auto;
-  background: var(--bg);
+  background: radial-gradient(
+      ellipse 1200px 620px at 50% -8%,
+      rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.06),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 760px 480px at 0% 100%,
+      rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.035),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 760px 480px at 100% 100%,
+      rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.035),
+      transparent 55%
+    ),
+    #020203;
   scrollbar-width: thin;
   scrollbar-color: rgba(155, 77, 255, 0.35) transparent;
 }
@@ -1219,6 +1241,100 @@ body.modal-open .case-backdrop a {
   position: relative;
   min-height: 100%;
   padding-bottom: clamp(3rem, 6vw, 4rem);
+}
+
+/* -------------------------------------------------------- */
+/* Sekme / chapter navigasyonu (bkz. CaseChapterNav.jsx)      */
+/* -------------------------------------------------------- */
+.case-chapter-nav__sentinel {
+  height: 1px;
+}
+
+.case-chapter-nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 1.9rem;
+  height: 52px;
+  padding: 0 clamp(1.5rem, 6vw, 3rem);
+  background: rgba(5, 3, 8, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.case-chapter-nav::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sayfanın en üstündeyken belirgin bir gölge yok — yalnızca içerik
+   sekmelerin altından geçmeye başlayınca (nav sticky'e "yapışınca",
+   .case-chapter-nav--scrolled sınıfı) yumuşak, geniş, düşük opaklıklı
+   bir gradient beliriyor. Sert bir border-bottom değil, atmosferik bir
+   ayrım. Üst ucu proje accentColor'ını yalnızca %6 oranında taşıyor. */
+.case-chapter-nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 48px;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.06),
+    rgba(0, 0, 0, 0.3) 35%,
+    transparent
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.case-chapter-nav--scrolled::after {
+  opacity: 1;
+}
+
+.case-chapter-nav__item {
+  position: relative;
+  flex: 0 0 auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: rgba(238, 233, 244, 0.42);
+  white-space: nowrap;
+  transition: color 0.35s ease;
+}
+
+.case-chapter-nav__item:hover {
+  color: rgba(238, 233, 244, 0.8);
+}
+
+.case-chapter-nav__item--active {
+  color: rgba(238, 233, 244, 0.95);
+}
+
+/* Tek bir underline elemanı, aktif sekme değiştikçe left/width'i JS ile
+   güncelleniyor (bkz. CaseChapterNav.jsx) — kayma animasyonu düz bir CSS
+   transition, framer-motion'ın layout/FLIP mekanizması kullanılmıyor. */
+.case-chapter-nav__underline {
+  position: absolute;
+  left: 0;
+  bottom: 8px;
+  width: 0;
+  height: 1.5px;
+  border-radius: 1px;
+  background: rgb(var(--accent-r), var(--accent-g), var(--accent-b));
+  transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1), width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.case-chapter-nav__underline--instant {
+  transition: none;
 }
 
 .case-eyebrow {
@@ -1709,6 +1825,37 @@ body.modal-open .case-backdrop a {
     height: auto;
     min-height: 0;
     aspect-ratio: 4 / 5;
+  }
+
+  /* Mobilde sekmeler yatay kaydırılabilir; sağda/solda hafif fade mask
+     daha fazla sekme olduğunu hissettiriyor. Gölge daha kısa/soluk. */
+  .case-chapter-nav {
+    height: 48px;
+    gap: 1.5rem;
+    padding: 0 1.2rem;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      black 20px,
+      black calc(100% - 20px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      black 20px,
+      black calc(100% - 20px),
+      transparent 100%
+    );
+  }
+
+  .case-chapter-nav::after {
+    height: 28px;
+    opacity: 0;
+  }
+
+  .case-chapter-nav--scrolled::after {
+    opacity: 0.75;
   }
 
   .case-statement {
