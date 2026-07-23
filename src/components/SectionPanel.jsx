@@ -6,9 +6,11 @@ import { sidebarSections } from "../data/sidebarSections"
 import { hexToRgb, setPanelAccentOverride } from "../context/ThemeEngine"
 import AboutPanelContent from "./AboutPanelContent"
 import ContactPanelContent from "./ContactPanelContent"
+import EdgeGlow from "./EdgeGlow"
 
 export default function SectionPanel({ sectionId, onClose, onNavigate }) {
   const panelScrollRef = useRef(null)
+  const backdropRef = useRef(null)
   const data = sectionId ? sections[sectionId] : null
   const accentColor = sectionId
     ? sidebarSections.find((s) => s.id === sectionId)?.accentColor
@@ -46,6 +48,7 @@ export default function SectionPanel({ sectionId, onClose, onNavigate }) {
     <AnimatePresence>
       {data && (
         <motion.div
+          ref={backdropRef}
           className="modal-backdrop"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -130,6 +133,15 @@ export default function SectionPanel({ sectionId, onClose, onNavigate }) {
               </>
             )}
           </motion.div>
+
+          <EdgeGlow
+            containerRef={panelScrollRef}
+            backdropRef={backdropRef}
+            accentColor={accentColor}
+            radius={2}
+            active={!!data}
+            triggerKey={sectionId}
+          />
         </motion.div>
       )}
     </AnimatePresence>
