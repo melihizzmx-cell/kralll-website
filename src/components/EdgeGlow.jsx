@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react"
 
 // Bir frame (proje case study'si veya sidebar section paneli) açık olduğu
-// sürece çevresinde sürekli, düşük tempoda saat yönünde akan fiber-optik
-// benzeri bir ışık çizgisi. Klasik box-shadow/neon border değil: her zaman
-// görünen çok ince bir temel stroke + üzerinde frame'in tüm çevresini
-// (dört kenar + köşeler) kesintisiz dolaşan, önü parlak/kuyruğu sönen bir
-// akış bandı.
+// sürece çevresinde sürekli, düşük tempoda saat yönünde akan tek bir ışık
+// parçası. Frame'in TAMAMINI çevreleyen sabit/statik bir stroke YOK —
+// yalnızca hareketli bir "head + tail" görünür, geçtiği yerde kenar tekrar
+// tamamen karanlığa döner. Geometriyi ölçmek için kullanılan referans
+// <rect> tamamen görünmez (stroke: transparent, opacity: 0) — yalnızca
+// getTotalLength() için var, hiçbir görsel iz bırakmaz.
 //
 // Hareket, Web Animations API üzerinden element.animate() ile kuruluyor
 // (React state hiçbir animasyon karesinde güncellenmiyor — yalnızca
@@ -14,10 +15,9 @@ import { useEffect, useRef, useState } from "react"
 // `calc(-1 * var(--perimeter))` KULLANILMIYOR: kayıtsız (unregistered)
 // bir custom property'ye bağlı calc() ifadesi, Chromium'da stroke-dashoffset
 // için düzgün interpolasyon yerine %50 sınırında ayrık/sıçramalı bir
-// davranışa düşüyor (empirik olarak doğrulandı — ışık yalnızca üst kenarda
-// görünüp görünmez biçimde "sıçrıyordu", tam da bu yüzden). element.animate()
+// davranışa düşüyor (daha önce empirik olarak doğrulandı). element.animate()
 // literal sayısal keyframe değerleri kullandığı için bu sorunu tamamen
-// atlıyor ve WAAPI'nin garantili düzgün interpolasyonundan yararlanıyor.
+// atlıyor.
 //
 // Konumlandırma iki modda çalışır:
 //   fullscreen — ProjectModal (.case-backdrop) her zaman viewport'u birebir
@@ -34,15 +34,18 @@ import { useEffect, useRef, useState } from "react"
 // kaldığı sürece WAAPI animasyonları da yeniden kurulmaz.
 const LAP_DURATION_MS = 6500
 const LAP_DURATION_MOBILE_MS = 8500
-const HIGHLIGHT_FRACTION = 0.24
-const CORE_FRACTION = 0.09
+const TAIL_FRACTION = 0.18
+const CORE_FRACTION = 0.06
 // Pozitif bir WAAPI delay, o katmanı kalıcı olarak "delay/duration" oranı
 // kadar geriden takip ettirir (infinite iterasyonda her turda sürekli).
-// Core (parlak çekirdek) gecikmesiz önde akar; tail/glow-wide/kontur bu
-// kadar geriden gelir. Core'un tail bandının ÖN (yeni/parlak) ucuna denk
-// gelmesi için gecikme ≈ (tail uzunluğu - core uzunluğu) olmalı.
-const TAIL_DELAY_FRACTION = HIGHLIGHT_FRACTION - CORE_FRACTION - 0.03
+// Core (parlak head) gecikmesiz önde akar; tail bu kadar geriden gelir.
+// Core'un tail bandının ÖN (yeni/parlak) ucuna denk gelmesi için gecikme
+// ≈ (tail uzunluğu - core uzunluğu) olmalı.
+const TAIL_DELAY_FRACTION = TAIL_FRACTION - CORE_FRACTION - 0.02
 const STROKE_INSET = 1
+// reduced-motion'da tam çevre YOK — yalnızca sabit, kısa bir accent
+// segmenti (frame'in başlangıç noktasında, hareketsiz).
+const REDUCED_STATIC_FRACTION = 0.08
 
 export default function EdgeGlow({
   containerRef,
@@ -54,9 +57,7 @@ export default function EdgeGlow({
 }) {
   const [rect, setRect] = useState(null)
   const [perimeter, setPerimeter] = useState(0)
-  const baseRectRef = useRef(null)
-  const lapContourRef = useRef(null)
-  const glowWideRef = useRef(null)
+  const geometryRectRef = useRef(null)
   const tailRef = useRef(null)
   const coreRef = useRef(null)
   const runningAnimsRef = useRef([])
@@ -102,10 +103,10 @@ export default function EdgeGlow({
     }
   }, [active, fullscreen, containerRef, backdropRef])
 
-  // --- Perimetre ölçümü (rect radius'u yansıtan gerçek çevre uzunluğu) ---
+  // --- Perimetre ölçümü (görünmez referans rect üzerinden) ---
   useEffect(() => {
-    if (!rect || !baseRectRef.current) return
-    setPerimeter(baseRectRef.current.getTotalLength())
+    if (!rect || !geometryRectRef.current) return
+    setPerimeter(geometryRectRef.current.getTotalLength())
   }, [rect, radius])
 
   // --- Sürekli akış animasyonu (WAAPI, literal sayısal keyframe'ler) ---
@@ -116,8 +117,6 @@ export default function EdgeGlow({
     if (reduced || !perimeter) return
 
     const targets = [
-      { el: lapContourRef.current, delay: tailDelayMs },
-      { el: glowWideRef.current, delay: tailDelayMs },
       { el: tailRef.current, delay: tailDelayMs },
       { el: coreRef.current, delay: 0 },
     ]
@@ -150,47 +149,40 @@ export default function EdgeGlow({
     : { position: "absolute", left: rect.left, top: rect.top, width: rect.width, height: rect.height }
 
   const dashFor = (fraction) => (perimeter ? `${perimeter * fraction} ${perimeter}` : undefined)
-  const glowWideWidth = isMobile ? 8 : 12
+  const tailWidth = isMobile ? 4 : 5
 
   return (
     <div className="edge-glow" style={wrapperStyle} aria-hidden="true">
       <svg width={rect.width} height={rect.height} style={{ overflow: "visible" }}>
-        {/* Fotoğraf ağırlıklı hero gibi parlak/canlı zeminlerde ince stroke'un
-            okunurluğunu garanti eden, neredeyse siyah ince kontur — büyük/bulanık
-            bir gölge değil, rengin altını çizen tek pikselik bir çerçeve. */}
-        <rect className="edge-glow__contour" {...geometry} fill="none" />
+        {/* Yalnızca perimetre ölçümü için — hiçbir görsel iz bırakmaz. */}
         <rect
-          ref={baseRectRef}
-          className="edge-glow__base"
+          ref={geometryRectRef}
+          className="edge-glow__geometry"
           {...geometry}
           fill="none"
-          style={{ stroke: accentColor }}
+          stroke="transparent"
+          style={{ opacity: 0 }}
         />
+
+        {reduced && perimeter > 0 && (
+          <rect
+            className="edge-glow__reduced-static"
+            {...geometry}
+            fill="none"
+            strokeDasharray={dashFor(REDUCED_STATIC_FRACTION)}
+            style={{ stroke: accentColor }}
+          />
+        )}
 
         {!reduced && perimeter > 0 && (
           <g className="edge-glow__lap">
-            <rect
-              ref={lapContourRef}
-              className="edge-glow__lap-contour"
-              {...geometry}
-              fill="none"
-              strokeDasharray={dashFor(HIGHLIGHT_FRACTION)}
-            />
-            <rect
-              ref={glowWideRef}
-              className="edge-glow__glow-wide"
-              {...geometry}
-              fill="none"
-              strokeWidth={glowWideWidth}
-              strokeDasharray={dashFor(HIGHLIGHT_FRACTION + 0.03)}
-              style={{ stroke: accentColor }}
-            />
             <rect
               ref={tailRef}
               className="edge-glow__tail"
               {...geometry}
               fill="none"
-              strokeDasharray={dashFor(HIGHLIGHT_FRACTION)}
+              strokeWidth={tailWidth}
+              strokeDasharray={dashFor(TAIL_FRACTION)}
               style={{ stroke: accentColor }}
             />
             <rect
