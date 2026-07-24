@@ -1942,9 +1942,18 @@ body.modal-open .case-backdrop a {
 }
 
 /* -------------------------------------------------------- */
-/* Traveling edge glow — açılan frame'in çevresinde tek turluk  */
-/* fiber-optik ışık çizgisi (EdgeGlow.jsx)                     */
+/* Traveling edge glow — açılan frame açık olduğu sürece      */
+/* çevresinde sürekli, düşük tempoda akan fiber-optik ışık    */
+/* çizgisi (EdgeGlow.jsx)                                      */
 /* -------------------------------------------------------- */
+/* Akış animasyonu CSS @keyframes değil, EdgeGlow.jsx içinde
+   element.animate() (WAAPI) ile literal sayısal keyframe değerleriyle
+   kuruluyor — calc(-1 * var(--perimeter)) gibi kayıtsız custom property'ye
+   bağlı bir keyframe hedefi Chromium'da stroke-dashoffset için düzgün
+   interpolasyon yerine %50 sınırında ayrık/sıçramalı bir davranışa
+   düşüyordu (ışığın yalnızca üst kenarda görünüp görünmez biçimde
+   sıçraması buradan kaynaklanıyordu); WAAPI bu sorunu tamamen atlıyor. */
+
 /* .modal-backdrop zaten position:fixed olduğu için pozisyon
    bağlamı sağlıyor; .edge-glow onun içine sibling olarak, panelden
    SONRA render edilip üstüne "boyanır". case-close/modal-close'un
@@ -1962,7 +1971,7 @@ body.modal-open .case-backdrop a {
 
 .edge-glow__contour {
   stroke: rgba(2, 1, 4, 0.5);
-  stroke-width: 2.8;
+  stroke-width: 2.6;
   vector-effect: non-scaling-stroke;
 }
 
@@ -1970,43 +1979,41 @@ body.modal-open .case-backdrop a {
   stroke-width: 1.2;
   stroke-opacity: 0.3;
   vector-effect: non-scaling-stroke;
+  transition: stroke 400ms ease;
 }
 
 .edge-glow__lap {
-  animation-name: edge-glow-fade-in;
-  animation-duration: 220ms;
-  animation-timing-function: ease-out;
-  animation-fill-mode: both;
+  animation: edge-glow-fade-in 300ms ease-out both;
 }
 
 .edge-glow__lap-contour,
 .edge-glow__glow-wide,
 .edge-glow__tail,
-.edge-glow__head {
-  animation-name: edge-glow-travel;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
+.edge-glow__core {
   vector-effect: non-scaling-stroke;
 }
 
 .edge-glow__lap-contour {
-  stroke: rgba(2, 1, 4, 0.6);
-  stroke-width: 3.6;
+  stroke: rgba(2, 1, 4, 0.55);
+  stroke-width: 3.4;
 }
 
 .edge-glow__glow-wide {
-  stroke-opacity: 0.1;
+  stroke-opacity: 0.12;
+  transition: stroke 400ms ease;
 }
 
 .edge-glow__tail {
-  stroke-width: 2.4;
-  stroke-opacity: 0.36;
+  stroke-width: 2.6;
+  stroke-opacity: 0.5;
+  transition: stroke 400ms ease;
 }
 
-.edge-glow__head {
-  stroke-width: 1.5;
+.edge-glow__core {
+  stroke-width: 1.3;
   stroke-opacity: 0.95;
   stroke-linecap: round;
+  transition: stroke 400ms ease;
 }
 
 @keyframes edge-glow-fade-in {
@@ -2015,38 +2022,31 @@ body.modal-open .case-backdrop a {
   }
 }
 
-@keyframes edge-glow-travel {
-  from {
-    stroke-dashoffset: 0;
-  }
-  to {
-    stroke-dashoffset: calc(-1 * var(--edge-glow-perimeter));
-  }
-}
-
 @media (max-width: 900px) {
   .edge-glow__base {
     stroke-opacity: 0.24;
+    stroke-width: 1;
   }
 
   .edge-glow__glow-wide {
-    stroke-opacity: 0.07;
+    stroke-opacity: 0.08;
   }
 
   .edge-glow__tail {
-    stroke-opacity: 0.28;
+    stroke-opacity: 0.36;
+    stroke-width: 2.2;
   }
 
-  .edge-glow__head {
+  .edge-glow__core {
     stroke-opacity: 0.8;
   }
 
   .edge-glow__contour {
-    stroke-width: 2.3;
+    stroke-width: 2.1;
   }
 
   .edge-glow__lap-contour {
-    stroke-width: 2.9;
+    stroke-width: 2.7;
   }
 }
 

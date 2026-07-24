@@ -1,9 +1,23 @@
 import { useEffect, useRef, useState } from "react"
 
-// Bir frame (proje case study'si veya sidebar section paneli) açıldığında
-// çevresinde saat yönünde bir tur atan, fiber-optik benzeri ince bir ışık
-// çizgisi. Klasik box-shadow/neon border değil: sakin 1px temel stroke +
-// üzerinde kısa, parlak başlı/sönen kuyruklu tek bir "comet" katmanı.
+// Bir frame (proje case study'si veya sidebar section paneli) açık olduğu
+// sürece çevresinde sürekli, düşük tempoda saat yönünde akan fiber-optik
+// benzeri bir ışık çizgisi. Klasik box-shadow/neon border değil: her zaman
+// görünen çok ince bir temel stroke + üzerinde frame'in tüm çevresini
+// (dört kenar + köşeler) kesintisiz dolaşan, önü parlak/kuyruğu sönen bir
+// akış bandı.
+//
+// Hareket, Web Animations API üzerinden element.animate() ile kuruluyor
+// (React state hiçbir animasyon karesinde güncellenmiyor — yalnızca
+// geometri/perimetre değiştiğinde bir kez yeniden kurulup tarayıcının
+// compositor'ına bırakılıyor). Bilinçli olarak CSS @keyframes içinde
+// `calc(-1 * var(--perimeter))` KULLANILMIYOR: kayıtsız (unregistered)
+// bir custom property'ye bağlı calc() ifadesi, Chromium'da stroke-dashoffset
+// için düzgün interpolasyon yerine %50 sınırında ayrık/sıçramalı bir
+// davranışa düşüyor (empirik olarak doğrulandı — ışık yalnızca üst kenarda
+// görünüp görünmez biçimde "sıçrıyordu", tam da bu yüzden). element.animate()
+// literal sayısal keyframe değerleri kullandığı için bu sorunu tamamen
+// atlıyor ve WAAPI'nin garantili düzgün interpolasyonundan yararlanıyor.
 //
 // Konumlandırma iki modda çalışır:
 //   fullscreen — ProjectModal (.case-backdrop) her zaman viewport'u birebir
@@ -13,10 +27,21 @@ import { useEffect, useRef, useState } from "react"
 //                settle-ölçümüyle takip edilir (framer-motion'ın giriş
 //                animasyonu ilk ~500ms'de rect'i hafifçe kaydırabildiği
 //                için mount sonrası birkaç kez yeniden ölçülür).
-const OPEN_LAP_MS = 2200
-const OPEN_LAP_MS_MOBILE = 1900
-const IDLE_GAP_MS = 7000
-const PULSE_LAP_MS = 3600
+//
+// Proje/sekme değiştiğinde bileşen yeniden mount edilmez — yalnızca
+// accentColor ve geometri prop'ları güncellenir, akış animasyonu kesintisiz
+// sürer (CSS transition ile renk ~400ms'de yumuşak geçer), perimetre aynı
+// kaldığı sürece WAAPI animasyonları da yeniden kurulmaz.
+const LAP_DURATION_MS = 6500
+const LAP_DURATION_MOBILE_MS = 8500
+const HIGHLIGHT_FRACTION = 0.24
+const CORE_FRACTION = 0.09
+// Pozitif bir WAAPI delay, o katmanı kalıcı olarak "delay/duration" oranı
+// kadar geriden takip ettirir (infinite iterasyonda her turda sürekli).
+// Core (parlak çekirdek) gecikmesiz önde akar; tail/glow-wide/kontur bu
+// kadar geriden gelir. Core'un tail bandının ÖN (yeni/parlak) ucuna denk
+// gelmesi için gecikme ≈ (tail uzunluğu - core uzunluğu) olmalı.
+const TAIL_DELAY_FRACTION = HIGHLIGHT_FRACTION - CORE_FRACTION - 0.03
 const STROKE_INSET = 1
 
 export default function EdgeGlow({
@@ -26,13 +51,21 @@ export default function EdgeGlow({
   accentColor,
   radius = 0,
   active,
-  triggerKey,
 }) {
   const [rect, setRect] = useState(null)
   const [perimeter, setPerimeter] = useState(0)
-  const [lap, setLap] = useState(null)
   const baseRectRef = useRef(null)
-  const generationRef = useRef(0)
+  const lapContourRef = useRef(null)
+  const glowWideRef = useRef(null)
+  const tailRef = useRef(null)
+  const coreRef = useRef(null)
+  const runningAnimsRef = useRef([])
+
+  const reduced =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 900px)").matches
+  const durationMs = isMobile ? LAP_DURATION_MOBILE_MS : LAP_DURATION_MS
+  const tailDelayMs = durationMs * TAIL_DELAY_FRACTION
 
   // --- Boyut / konum ölçümü ---
   useEffect(() => {
@@ -75,60 +108,40 @@ export default function EdgeGlow({
     setPerimeter(baseRectRef.current.getTotalLength())
   }, [rect, radius])
 
-  // --- Açılış turu → sessizlik → yavaş nabız döngüsü ---
+  // --- Sürekli akış animasyonu (WAAPI, literal sayısal keyframe'ler) ---
   useEffect(() => {
-    if (!active || !rect) return
+    runningAnimsRef.current.forEach((a) => a.cancel())
+    runningAnimsRef.current = []
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduced) {
-      setLap(null)
-      return
-    }
+    if (reduced || !perimeter) return
 
-    const isMobile = window.matchMedia("(max-width: 900px)").matches
-    generationRef.current += 1
-    const myGeneration = generationRef.current
-    const timers = []
+    const targets = [
+      { el: lapContourRef.current, delay: tailDelayMs },
+      { el: glowWideRef.current, delay: tailDelayMs },
+      { el: tailRef.current, delay: tailDelayMs },
+      { el: coreRef.current, delay: 0 },
+    ]
 
-    const schedule = (fn, delay) => {
-      const id = window.setTimeout(() => {
-        if (generationRef.current !== myGeneration) return
-        fn()
-      }, delay)
-      timers.push(id)
-    }
-
-    const runLap = (durationMs, intensity, onDone) => {
-      setLap({ id: `${myGeneration}-${Date.now()}`, durationMs, intensity })
-      schedule(() => {
-        setLap(null)
-        onDone?.()
-      }, durationMs)
-    }
-
-    const pulseLoop = () => {
-      if (isMobile) return
-      schedule(() => runLap(PULSE_LAP_MS, 0.5, pulseLoop), IDLE_GAP_MS)
-    }
-
-    runLap(isMobile ? OPEN_LAP_MS_MOBILE : OPEN_LAP_MS, 1, pulseLoop)
+    targets.forEach(({ el, delay }) => {
+      if (!el) return
+      const anim = el.animate(
+        [{ strokeDashoffset: "0px" }, { strokeDashoffset: `${-perimeter}px` }],
+        { duration: durationMs, delay, iterations: Infinity, easing: "linear" }
+      )
+      runningAnimsRef.current.push(anim)
+    })
 
     return () => {
-      generationRef.current += 1
-      timers.forEach((id) => window.clearTimeout(id))
-      setLap(null)
+      runningAnimsRef.current.forEach((a) => a.cancel())
+      runningAnimsRef.current = []
     }
-    // triggerKey değiştiğinde (yeni proje/sekme) tüm döngü sıfırdan başlar
-  }, [active, triggerKey, rect !== null])
+  }, [perimeter, durationMs, tailDelayMs, reduced])
 
   if (!active || !rect) return null
 
   const w = Math.max(0, rect.width - STROKE_INSET * 2)
   const h = Math.max(0, rect.height - STROKE_INSET * 2)
   const cornerRadius = Math.max(0, Math.min(radius, w / 2, h / 2))
-  const reduced =
-    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 900px)").matches
 
   const geometry = { x: STROKE_INSET, y: STROKE_INSET, width: w, height: h, rx: cornerRadius, ry: cornerRadius }
 
@@ -137,7 +150,7 @@ export default function EdgeGlow({
     : { position: "absolute", left: rect.left, top: rect.top, width: rect.width, height: rect.height }
 
   const dashFor = (fraction) => (perimeter ? `${perimeter * fraction} ${perimeter}` : undefined)
-  const glowWideWidth = isMobile ? 8 : 14
+  const glowWideWidth = isMobile ? 8 : 12
 
   return (
     <div className="edge-glow" style={wrapperStyle} aria-hidden="true">
@@ -151,49 +164,42 @@ export default function EdgeGlow({
           className="edge-glow__base"
           {...geometry}
           fill="none"
-          stroke={accentColor}
+          style={{ stroke: accentColor }}
         />
 
-        {!reduced && lap && perimeter > 0 && (
-          <g
-            key={lap.id}
-            className="edge-glow__lap"
-            style={{
-              "--edge-glow-perimeter": perimeter,
-              opacity: lap.intensity,
-            }}
-          >
+        {!reduced && perimeter > 0 && (
+          <g className="edge-glow__lap">
             <rect
+              ref={lapContourRef}
               className="edge-glow__lap-contour"
               {...geometry}
               fill="none"
-              strokeDasharray={dashFor(0.16)}
-              style={{ animationDuration: `${lap.durationMs}ms`, animationDelay: `${lap.durationMs * 0.07}ms` }}
+              strokeDasharray={dashFor(HIGHLIGHT_FRACTION)}
             />
             <rect
+              ref={glowWideRef}
               className="edge-glow__glow-wide"
               {...geometry}
               fill="none"
-              stroke={accentColor}
               strokeWidth={glowWideWidth}
-              strokeDasharray={dashFor(0.2)}
-              style={{ animationDuration: `${lap.durationMs}ms` }}
+              strokeDasharray={dashFor(HIGHLIGHT_FRACTION + 0.03)}
+              style={{ stroke: accentColor }}
             />
             <rect
+              ref={tailRef}
               className="edge-glow__tail"
               {...geometry}
               fill="none"
-              stroke={accentColor}
-              strokeDasharray={dashFor(0.16)}
-              style={{ animationDuration: `${lap.durationMs}ms`, animationDelay: `${lap.durationMs * 0.07}ms` }}
+              strokeDasharray={dashFor(HIGHLIGHT_FRACTION)}
+              style={{ stroke: accentColor }}
             />
             <rect
-              className="edge-glow__head"
+              ref={coreRef}
+              className="edge-glow__core"
               {...geometry}
               fill="none"
-              stroke={`color-mix(in srgb, white 48%, ${accentColor})`}
-              strokeDasharray={dashFor(0.045)}
-              style={{ animationDuration: `${lap.durationMs}ms` }}
+              strokeDasharray={dashFor(CORE_FRACTION)}
+              style={{ stroke: `color-mix(in srgb, white 45%, ${accentColor})` }}
             />
           </g>
         )}
