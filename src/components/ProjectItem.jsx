@@ -33,6 +33,8 @@ export default function ProjectItem({
   revealed,
   focused = false,
   receding = false,
+  onPeekStart,
+  onPeekEnd,
 }) {
   const btnRef = useRef(null)
   const [center, setCenter] = useState({ x: -1000, y: -1000 })
@@ -117,15 +119,23 @@ export default function ProjectItem({
           "--glow-opacity": glowOpacity,
         }}
         onClick={() => onSelect(project)}
-        onHoverStart={() => setHovered(true)}
-        onHoverEnd={() => setHovered(false)}
+        onHoverStart={() => {
+          setHovered(true)
+          onPeekStart?.(project)
+        }}
+        onHoverEnd={() => {
+          setHovered(false)
+          onPeekEnd?.(project)
+        }}
         onFocus={() => {
           setHovered(true)
           activateAccent()
+          onPeekStart?.(project)
         }}
         onBlur={() => {
           setHovered(false)
           releaseAccent()
+          onPeekEnd?.(project)
         }}
         onTouchStart={activateAccent}
       >

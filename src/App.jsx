@@ -10,10 +10,23 @@ import ProjectCloud from "./components/ProjectCloud"
 import ProjectModal from "./components/ProjectModal"
 import SectionPanel from "./components/SectionPanel"
 import IntroOverlay from "./components/IntroOverlay"
+import SurpriseMe from "./components/SurpriseMe"
+import { projects } from "./data/projects"
+import { pickRandomProject } from "./lib/discovery"
 
 const HINT_STORAGE_KEY = "kralll:hint-seen"
 const HINT_DELAY_MS = 10000
 const HINT_HOLD_MS = 3850
+
+// "R — surprise me" ipucu, yalnızca yukarıdaki fısıltı tamamen kaybolduktan
+// sonra ve oturum başına yalnızca bir kez belirir (bkz. SURPRISE_HINT_KEY,
+// sessionStorage — mevcut HINT_STORAGE_KEY'in localStorage/kalıcı
+// davranışından bilinçli olarak farklı). Sabit gecikme, iki mesajın asla
+// aynı anda görünmemesini garanti eder: HINT_DELAY_MS + HINT_HOLD_MS
+// (13850ms) her koşulda geçmiş oluyor.
+const SURPRISE_HINT_STORAGE_KEY = "kralll:surprise-hint-seen"
+const SURPRISE_HINT_DELAY_MS = 15200
+const SURPRISE_HINT_HOLD_MS = 3200
 
 function useClock() {
   const [now, setNow] = useState(new Date())
@@ -57,7 +70,9 @@ export default function App() {
   const [homeView, setHomeView] = useState("categories") // "categories" | "works"
   const [hasMoved, setHasMoved] = useState(false)
   const [hintVisible, setHintVisible] = useState(false)
+  const [surpriseHintVisible, setSurpriseHintVisible] = useState(false)
   const hintTimers = useRef([])
+  const surpriseHintTimers = useRef([])
   const now = useClock()
 
   useEffect(() => {
@@ -87,6 +102,48 @@ export default function App() {
       hintTimers.current = []
     }
   }, [])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (window.sessionStorage.getItem(SURPRISE_HINT_STORAGE_KEY)) return
+
+    const showTimer = setTimeout(() => {
+      setSurpriseHintVisible(true)
+      window.sessionStorage.setItem(SURPRISE_HINT_STORAGE_KEY, "1")
+      const hideTimer = setTimeout(() => setSurpriseHintVisible(false), SURPRISE_HINT_HOLD_MS)
+      surpriseHintTimers.current.push(hideTimer)
+    }, SURPRISE_HINT_DELAY_MS)
+    surpriseHintTimers.current.push(showTimer)
+
+    return () => {
+      surpriseHintTimers.current.forEach(clearTimeout)
+      surpriseHintTimers.current = []
+    }
+  }, [])
+
+  const handleSurprise = () => {
+    // ProjectModal veya SectionPanel açıkken (klavye kısayolu için asıl
+    // koruma; buton zaten bunlar açıkken backdrop'un altında kalıp
+    // tıklanamaz hâle geliyor) sessizce yok say.
+    if (selectedProject || activeSection !== "isler") return
+    const project = pickRandomProject(projects)
+    if (project) setSelectedProject(project)
+  }
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key.toLowerCase() !== "r") return
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      const target = e.target
+      const tag = target?.tagName
+      if (tag === "INPUT" || tag === "TEXTAREA" || target?.isContentEditable) return
+      if (selectedProject || activeSection !== "isler") return
+      e.preventDefault()
+      handleSurprise()
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [selectedProject, activeSection])
 
   const handleSelectSection = (id) => {
     setActiveSection(id)
@@ -186,6 +243,28 @@ export default function App() {
         >
           Good work takes curiosity.
         </motion.p>
+
+        <motion.p
+          className="discovery-hint"
+          aria-hidden="true"
+          initial={false}
+          animate={{ opacity: surpriseHintVisible ? 1 : 0 }}
+          transition={{
+            duration: prefersReducedMotion() ? 0 : surpriseHintVisible ? 0.85 : 0.9,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
+          R — surprise me
+        </motion.p>
+
+        <motion.div
+          className="discovery-layer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: hasMoved ? 1 : 0 }}
+          transition={{ duration: 1.2, delay: hasMoved ? 0.2 : 0, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <SurpriseMe onSurprise={handleSurprise} />
+        </motion.div>
 
         <ProjectModal
           project={selectedProject}
