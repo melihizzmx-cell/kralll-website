@@ -146,7 +146,7 @@ body.modal-open .case-backdrop a {
     transparent 1.4px
   );
   background-size: 46px 46px;
-  opacity: 0.56;
+  opacity: 0.5;
   -webkit-mask-image: radial-gradient(
     300px circle at var(--mx) var(--my),
     black 0%,
@@ -187,74 +187,112 @@ body.modal-open .case-backdrop a {
   overflow: hidden;
   mix-blend-mode: screen;
   -webkit-mask-image: radial-gradient(
-    ellipse 58% 60% at 50% 46%,
+    ellipse 60% 62% at 50% 46%,
     transparent 0%,
-    transparent 30%,
-    black 80%,
+    transparent 27%,
+    black 76%,
     black 100%
   );
   mask-image: radial-gradient(
-    ellipse 58% 60% at 50% 46%,
+    ellipse 60% 62% at 50% 46%,
     transparent 0%,
-    transparent 30%,
-    black 80%,
+    transparent 27%,
+    black 76%,
     black 100%
   );
 }
 
+/* Her bant iki katman taşır: (1) alttaki yumuşak radial-gradient "glow"
+   gövdesi, (2) üstteki repeating-linear-gradient "dalga filamanları" —
+   ince, seyrek, tekrarlayan ışık çizgileri. İkisi birlikte tek bir puslu
+   leke yerine gerçekten "wave/curtain" gibi algılanan bir doku üretiyor,
+   ama filamanlar İNCE ve ARALIKLI tutuluyor ki tiyatro perdesi/kumaş
+   dokusu gibi değil, ince enerji hatları gibi hissettirsin. Bandın kendi
+   mask-image'ı (dikdörtgen div'i dar, dikey bir şerit şekline yumuşakça
+   kırpar) bu dokuyu geometrik/keskin değil, akışkan kenarlı gösterir. */
 .wave-field__band {
   position: absolute;
   top: -25vh;
   width: 46vw;
   height: 150vh;
   will-change: transform;
+  -webkit-mask-image: radial-gradient(ellipse 27% 56% at 50% 50%, black 0%, black 30%, transparent 76%);
+  mask-image: radial-gradient(ellipse 27% 56% at 50% 50%, black 0%, black 30%, transparent 76%);
 }
 
 .wave-field__band--left-a {
-  left: -16vw;
-  background: radial-gradient(
-    ellipse 52% 40% at 50% 50%,
-    color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 35%, #6b4fc9) 0%,
-    transparent 72%
-  );
-  opacity: 0.21;
+  left: -13vw;
+  background: repeating-linear-gradient(
+      106deg,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 40%, #7d5ce0) 0px,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 40%, #7d5ce0) 6px,
+      transparent 24px,
+      transparent 76px
+    ),
+    radial-gradient(
+      ellipse 55% 55% at 50% 50%,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 35%, #6b4fc9) 0%,
+      transparent 74%
+    );
+  opacity: 0.26;
   animation: wave-drift-a 50s ease-in-out infinite;
 }
 
 .wave-field__band--left-b {
-  left: -2vw;
-  width: 34vw;
-  background: radial-gradient(
-    ellipse 46% 34% at 50% 50%,
-    color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%, #3f72b0) 0%,
-    transparent 70%
-  );
-  opacity: 0.14;
+  left: -3vw;
+  width: 32vw;
+  background: repeating-linear-gradient(
+      98deg,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 32%, #4f8ad1) 0px,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 32%, #4f8ad1) 5px,
+      transparent 22px,
+      transparent 70px
+    ),
+    radial-gradient(
+      ellipse 50% 48% at 50% 50%,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%, #3f72b0) 0%,
+      transparent 72%
+    );
+  opacity: 0.17;
   animation: wave-drift-b 63s ease-in-out infinite;
   animation-delay: -18s;
 }
 
 .wave-field__band--right-a {
-  right: -16vw;
-  background: radial-gradient(
-    ellipse 52% 40% at 50% 50%,
-    color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 35%, #3f72b0) 0%,
-    transparent 72%
-  );
-  opacity: 0.21;
+  right: -13vw;
+  background: repeating-linear-gradient(
+      74deg,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 40%, #4f8ad1) 0px,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 40%, #4f8ad1) 6px,
+      transparent 24px,
+      transparent 76px
+    ),
+    radial-gradient(
+      ellipse 55% 55% at 50% 50%,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 35%, #3f72b0) 0%,
+      transparent 74%
+    );
+  opacity: 0.26;
   animation: wave-drift-a 56s ease-in-out infinite;
   animation-delay: -9s;
 }
 
 .wave-field__band--right-b {
-  right: -2vw;
-  width: 34vw;
-  background: radial-gradient(
-    ellipse 46% 34% at 50% 50%,
-    color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%, #6b4fc9) 0%,
-    transparent 70%
-  );
-  opacity: 0.14;
+  right: -3vw;
+  width: 32vw;
+  background: repeating-linear-gradient(
+      82deg,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 32%, #7d5ce0) 0px,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 32%, #7d5ce0) 5px,
+      transparent 22px,
+      transparent 70px
+    ),
+    radial-gradient(
+      ellipse 50% 48% at 50% 50%,
+      color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%, #6b4fc9) 0%,
+      transparent 72%
+    );
+  opacity: 0.17;
   animation: wave-drift-b 59s ease-in-out infinite;
   animation-delay: -31s;
 }
@@ -265,7 +303,7 @@ body.modal-open .case-backdrop a {
     transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(1.5vw, -4vh) scale(1.06);
+    transform: translate(2.4vw, -6vh) scale(1.08);
   }
 }
 
@@ -275,24 +313,24 @@ body.modal-open .case-backdrop a {
     transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(-1.2vw, 3.5vh) scale(0.96);
+    transform: translate(-2vw, 5vh) scale(0.94);
   }
 }
 
 @media (max-width: 900px) {
   .wave-field {
     -webkit-mask-image: radial-gradient(
-      ellipse 55% 58% at 50% 46%,
+      ellipse 58% 60% at 50% 46%,
       transparent 0%,
-      transparent 26%,
-      black 82%,
+      transparent 24%,
+      black 76%,
       black 100%
     );
     mask-image: radial-gradient(
-      ellipse 55% 58% at 50% 46%,
+      ellipse 58% 60% at 50% 46%,
       transparent 0%,
-      transparent 26%,
-      black 82%,
+      transparent 24%,
+      black 76%,
       black 100%
     );
   }
@@ -304,7 +342,7 @@ body.modal-open .case-backdrop a {
 
   .wave-field__band--left-a,
   .wave-field__band--right-a {
-    opacity: 0.14;
+    opacity: 0.24;
     width: 60vw;
   }
 }
