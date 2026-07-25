@@ -12,8 +12,7 @@ import ProjectModal from "./components/ProjectModal"
 import SectionPanel from "./components/SectionPanel"
 import IntroOverlay from "./components/IntroOverlay"
 import SurpriseMe from "./components/SurpriseMe"
-import { projects } from "./data/projects"
-import { pickRandomProject } from "./lib/discovery"
+import PlaygroundOverlay from "./components/PlaygroundOverlay"
 
 const HINT_STORAGE_KEY = "kralll:hint-seen"
 const HINT_DELAY_MS = 10000
@@ -72,8 +71,10 @@ export default function App() {
   const [hasMoved, setHasMoved] = useState(false)
   const [hintVisible, setHintVisible] = useState(false)
   const [surpriseHintVisible, setSurpriseHintVisible] = useState(false)
+  const [playgroundOpen, setPlaygroundOpen] = useState(false)
   const hintTimers = useRef([])
   const surpriseHintTimers = useRef([])
+  const avatarBtnRef = useRef(null)
   const now = useClock()
 
   useEffect(() => {
@@ -122,13 +123,17 @@ export default function App() {
     }
   }, [])
 
-  const handleSurprise = () => {
+  const handleOpenPlayground = () => {
     // ProjectModal veya SectionPanel açıkken (klavye kısayolu için asıl
     // koruma; buton zaten bunlar açıkken backdrop'un altında kalıp
     // tıklanamaz hâle geliyor) sessizce yok say.
-    if (selectedProject || activeSection !== "isler") return
-    const project = pickRandomProject(projects)
-    if (project) setSelectedProject(project)
+    if (selectedProject || activeSection !== "isler" || playgroundOpen) return
+    setPlaygroundOpen(true)
+  }
+
+  const handleClosePlayground = () => {
+    setPlaygroundOpen(false)
+    avatarBtnRef.current?.focus()
   }
 
   useEffect(() => {
@@ -138,13 +143,13 @@ export default function App() {
       const target = e.target
       const tag = target?.tagName
       if (tag === "INPUT" || tag === "TEXTAREA" || target?.isContentEditable) return
-      if (selectedProject || activeSection !== "isler") return
+      if (selectedProject || activeSection !== "isler" || playgroundOpen) return
       e.preventDefault()
-      handleSurprise()
+      handleOpenPlayground()
     }
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [selectedProject, activeSection])
+  }, [selectedProject, activeSection, playgroundOpen])
 
   const handleSelectSection = (id) => {
     setActiveSection(id)
@@ -172,7 +177,7 @@ export default function App() {
       <div className="app">
         <div className="bg-vignette" aria-hidden="true" />
         <WaveField />
-        <FiberAmbience paused={!!selectedProject || activeSection !== "isler"} />
+        <FiberAmbience paused={!!selectedProject || activeSection !== "isler" || playgroundOpen} />
         <div className="bg-grid" aria-hidden="true" />
         <div className="bg-noise" aria-hidden="true" />
 
@@ -265,7 +270,7 @@ export default function App() {
           animate={{ opacity: hasMoved ? 1 : 0 }}
           transition={{ duration: 1.2, delay: hasMoved ? 0.2 : 0, ease: [0.16, 1, 0.3, 1] }}
         >
-          <SurpriseMe onSurprise={handleSurprise} />
+          <SurpriseMe onOpen={handleOpenPlayground} buttonRef={avatarBtnRef} />
         </motion.div>
 
         <ProjectModal
@@ -278,6 +283,7 @@ export default function App() {
           onClose={() => setActiveSection("isler")}
           onNavigate={setActiveSection}
         />
+        <PlaygroundOverlay open={playgroundOpen} onClose={handleClosePlayground} />
 
         <IntroOverlay visible={!hasMoved} />
       </div>

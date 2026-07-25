@@ -660,49 +660,81 @@ body.modal-open .case-backdrop a {
   z-index: 20;
 }
 
-/* Ana kahraman değil — sakin bir davet. Neon buton/renkli kutu yok;
-   kontrast ve küçük bir accent detayı yalnızca hover/focus'ta belirir. */
+/* Ana kahraman değil — sakin, kişisel bir davet. Artık rastgele proje
+   AÇMIYOR; tıklanınca PlaygroundOverlay'i açan pixel-art bir avatar +
+   kısa etiket (bkz. SurpriseMe.jsx, PlaygroundOverlay.jsx). Neon buton/
+   renkli kutu yok; kontrast ve küçük bir accent detayı yalnızca
+   hover/focus'ta belirir. min-width/height 44px — mobil dokunma hedefi. */
 .surprise-me {
   position: relative;
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 0.4rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.35rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(238, 233, 244, 0.42);
+  color: rgba(238, 233, 244, 0.5);
   transition: color 0.35s ease, transform 0.35s ease;
 }
 
-.surprise-me::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -0.5rem;
-  width: 0;
-  height: 1px;
-  background: rgb(var(--accent-r), var(--accent-g), var(--accent-b));
-  opacity: 0;
-  transform: translateX(-50%);
-  transition: width 0.35s ease, opacity 0.35s ease;
+.surprise-me__avatar {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(238, 233, 244, 0.04);
+  border: 1px solid rgba(238, 233, 244, 0.14);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
-.surprise-me:hover,
-.surprise-me:focus-visible {
-  color: rgba(238, 233, 244, 0.82);
-  transform: translateY(-1px);
+.surprise-me__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
 }
 
-.surprise-me:hover::before,
-.surprise-me:focus-visible::before {
-  width: 22px;
-  opacity: 0.75;
+.surprise-me__avatar-fallback {
+  font-size: 0.85rem;
+  color: rgba(238, 233, 244, 0.4);
+}
+
+.surprise-me__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .surprise-me__arrow {
   display: inline-block;
   transition: transform 0.35s ease;
+}
+
+.surprise-me__meta {
+  font-size: 0.56rem;
+  letter-spacing: 0.05em;
+  color: rgba(238, 233, 244, 0.26);
+}
+
+.surprise-me:hover,
+.surprise-me:focus-visible {
+  color: rgba(238, 233, 244, 0.88);
+  transform: translateY(-2px);
+}
+
+.surprise-me:hover .surprise-me__avatar,
+.surprise-me:focus-visible .surprise-me__avatar {
+  border-color: rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.55);
+  box-shadow: 0 0 14px rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.28);
+  animation: surprise-idle-jitter 0.5s steps(2) 1;
 }
 
 .surprise-me:hover .surprise-me__arrow,
@@ -713,7 +745,157 @@ body.modal-open .case-backdrop a {
 .surprise-me:focus-visible {
   outline: 1px solid rgba(238, 233, 244, 0.4);
   outline-offset: 6px;
+  border-radius: 4px;
+}
+
+@keyframes surprise-idle-jitter {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(1px, -1px);
+  }
+}
+
+/* -------------------------------------------------------- */
+/* Playground overlay — "Little Melih" easter egg               */
+/* -------------------------------------------------------- */
+/* Mevcut ProjectModal/case study sisteminden bilinçli olarak küçük ve
+   ayrı: dashboard/kart grid/oyun menüsü değil, kontrollü tek bir çerçeve.
+   Accent rengi, mevcut "Playground" kategorisinin (categories.js,
+   #B7D65C) rengiyle aynı — yeni bir renk sistemi değil, o kategoriyle
+   görsel süreklilik. */
+.playground-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(2, 1, 4, 0.75);
+  backdrop-filter: blur(14px);
+}
+
+.playground-frame {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, #0b0d08 0%, #050603 100%);
+  border: 1px solid rgba(183, 214, 92, 0.16);
+  border-radius: 3px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.playground-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(238, 233, 244, 0.14);
+  border-radius: 50%;
+  color: var(--text-dim);
+  background: rgba(5, 3, 8, 0.4);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.playground-close:hover,
+.playground-close:focus-visible {
+  color: #b7d65c;
+  border-color: rgba(183, 214, 92, 0.5);
+}
+
+.playground-tag {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(183, 214, 92, 0.7);
+  margin-bottom: 0.9rem;
+}
+
+.playground-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 60vh;
   border-radius: 2px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.playground-media__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+.playground-media--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(238, 233, 244, 0.32);
+}
+
+.playground-play {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(5, 3, 8, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(238, 233, 244, 0.18);
+  color: rgba(238, 233, 244, 0.88);
+  transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.playground-play:hover,
+.playground-play:focus-visible {
+  border-color: rgba(183, 214, 92, 0.55);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.playground-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 1rem;
+}
+
+.playground-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: rgba(238, 233, 244, 0.92);
+}
+
+.playground-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: rgba(238, 233, 244, 0.4);
 }
 
 /* -------------------------------------------------------- */
@@ -792,8 +974,20 @@ body.modal-open .case-backdrop a {
 
 @media (prefers-reduced-motion: reduce) {
   .surprise-me,
-  .surprise-me::before,
+  .surprise-me__avatar,
   .surprise-me__arrow {
+    transition: none;
+  }
+
+  .surprise-me:hover .surprise-me__avatar,
+  .surprise-me:focus-visible .surprise-me__avatar {
+    animation: none;
+  }
+
+  .playground-backdrop,
+  .playground-frame,
+  .playground-close,
+  .playground-play {
     transition: none;
   }
 }
@@ -810,6 +1004,28 @@ body.modal-open .case-backdrop a {
 
   .discovery-layer {
     bottom: 1.4rem;
+  }
+
+  .playground-frame {
+    max-width: 100%;
+    max-height: 92vh;
+    padding: 1.15rem;
+  }
+
+  .playground-media {
+    max-height: 52vh;
+  }
+
+  .playground-close {
+    width: 40px;
+    height: 40px;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .playground-play {
+    width: 44px;
+    height: 44px;
   }
 }
 
