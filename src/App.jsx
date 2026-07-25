@@ -13,6 +13,7 @@ import SectionPanel from "./components/SectionPanel"
 import IntroOverlay from "./components/IntroOverlay"
 import SurpriseMe from "./components/SurpriseMe"
 import PlaygroundOverlay from "./components/PlaygroundOverlay"
+import AmbientAudio from "./components/AmbientAudio"
 
 const HINT_STORAGE_KEY = "kralll:hint-seen"
 const HINT_DELAY_MS = 10000
@@ -174,6 +175,7 @@ export default function App() {
   return (
     <MouseProvider>
       <ThemeEngine />
+      <AmbientAudio />
       <div className="app">
         <div className="bg-vignette" aria-hidden="true" />
         <WaveField />

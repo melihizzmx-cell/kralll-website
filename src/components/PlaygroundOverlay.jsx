@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Pause, Play, X } from "lucide-react"
 import { prefersReducedMotion } from "../lib/caseTransition"
+import { notifyAudibleMediaStart, notifyAudibleMediaStop } from "../lib/ambientAudio"
 import { playgroundItems } from "../data/playground"
 
 const EASE = [0.16, 1, 0.3, 1]
@@ -43,6 +44,11 @@ export default function PlaygroundOverlay({ open, onClose }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [mediaError, setMediaError] = useState(false)
   const reduced = prefersReducedMotion()
+  // Ambient audio'ya yalnızca gerçek bir start/stop geçişinde haber verir —
+  // "pause" ve "ended" ikisi de tarayıcıda ardışık ateşlenebildiği için bu
+  // ref, notifyAudibleMediaStop()'un iki kez çağrılmasını (ve sayaç
+  // sapmasını) engeller (bkz. lib/ambientAudio.js).
+  const audibleActiveRef = useRef(false)
 
   useEffect(() => {
     if (!open) return
@@ -96,10 +102,35 @@ export default function PlaygroundOverlay({ open, onClose }) {
     }
   }
 
-  const handleEnded = () => {
+  const handleVideoPlay = () => {
+    setIsPlaying(true)
+    if (!audibleActiveRef.current) {
+      audibleActiveRef.current = true
+      notifyAudibleMediaStart()
+    }
+  }
+
+  const handleVideoPause = () => {
     setIsPlaying(false)
+    if (audibleActiveRef.current) {
+      audibleActiveRef.current = false
+      notifyAudibleMediaStop()
+    }
+  }
+
+  const handleEnded = () => {
+    handleVideoPause()
     const video = videoRef.current
     if (video) video.currentTime = 0
+  }
+
+  // play() spec'e göre gerçek decode/oynatma garantisi olmadan "play"
+  // event'ini iyimser biçimde ateşleyebilir (bkz. HTML Living Standard);
+  // bu yüzden play() sonrası hemen hata alan bir kaynakta ambient kilidi
+  // takılı kalmasın diye burada da serbest bırakılıyor.
+  const handleMediaError = () => {
+    setMediaError(true)
+    handleVideoPause()
   }
 
   return (
@@ -146,10 +177,10 @@ export default function PlaygroundOverlay({ open, onClose }) {
                   playsInline
                   preload="metadata"
                   aria-describedby="playground-media-desc"
-                  onPlay={() => setIsPlaying(true)}
-                  onPause={() => setIsPlaying(false)}
+                  onPlay={handleVideoPlay}
+                  onPause={handleVideoPause}
                   onEnded={handleEnded}
-                  onError={() => setMediaError(true)}
+                  onError={handleMediaError}
                 />
                 <button
                   type="button"
