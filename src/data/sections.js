@@ -67,15 +67,15 @@ export const sections = {
     eyebrowLang: "en",
     body: ["New work will appear here."],
   },
+  // "notlar" da (hakkimda/iletisim gibi) generic list render'ı yerine kendi
+  // bileşenine sahip — DailySignalContent.jsx, kullanıcının yerel takvim
+  // gününden deterministik olarak üretilen "Daily Signal"ı gösteriyor
+  // (bkz. src/lib/dailySignal.js + src/data/dailySignal.js). Bu yüzden
+  // burada statik bir liste yok; title/eyebrow yalnızca aria-label ve
+  // SectionPanel'in genel çerçevesi için kullanılıyor.
   notlar: {
     title: "Not Defteri",
     eyebrow: "Notlar",
-    list: [
-      { title: "Karanlık arayüzlerde okunabilirlik", meta: "2026" },
-      { title: "El yazısı tipografi denemeleri", meta: "2025" },
-      { title: "Minimal navigasyon üzerine", meta: "2025" },
-      { title: "Işık, gölge ve odak hissi", meta: "2024" },
-    ],
   },
   "ai-arsiv": {
     title: "AI Arşivi",
