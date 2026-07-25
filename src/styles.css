@@ -159,6 +159,162 @@ body.modal-open .case-backdrop a {
   );
 }
 
+/* Wave Field — çok yavaş akan, kenarlarda yaşayan ışık perdeleri
+   (bkz. src/components/WaveField.jsx). Tamamen saf CSS: JS animasyon
+   döngüsü yok, hareket yalnızca compositor-only transform @keyframes
+   ile sürüyor. filter:blur() KULLANILMIYOR (büyük alanda canlı blur bu
+   oturumda tekrar tekrar performans sorunu çıkardı) — yumuşaklık
+   tamamen radial-gradient'in kendi renk durak matematiğinden geliyor.
+
+   KONUM: .bg-vignette'in üstünde, FiberAmbience'ın altında — vignette
+   zaten kenarları karartıyor, wave-field bunun üzerine "sızan" bir ışık
+   gibi davranıyor; yılan/fiber hattı üstte kalıp en öndeki hareket
+   elemanı olmaya devam ediyor.
+
+   MERKEZ KORUMASI: bantlar zaten yalnızca sol/sağ ~%20'lik şeritlerde
+   yaşıyor (gradient merkeze varmadan sönüyor); container'ın kendi
+   mask-image'ı da merkezi ayrıca açıkça sıfırlıyor — çift güvence.
+
+   RENK: yeni bir sistem değil — her bant, canlı --accent-r/g/b
+   (ThemeEngine) değerini color-mix() ile sabit bir taban tonla (~%35
+   canlı accent + %65 taban) karıştırıyor; JS hiç renk bilmiyor, tıpkı
+   bg-vignette/bg-grid'in zaten yaptığı gibi. */
+.wave-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+  -webkit-mask-image: radial-gradient(
+    ellipse 58% 60% at 50% 46%,
+    transparent 0%,
+    transparent 30%,
+    black 80%,
+    black 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 58% 60% at 50% 46%,
+    transparent 0%,
+    transparent 30%,
+    black 80%,
+    black 100%
+  );
+}
+
+.wave-field__band {
+  position: absolute;
+  top: -25vh;
+  width: 46vw;
+  height: 150vh;
+  will-change: transform;
+}
+
+.wave-field__band--left-a {
+  left: -16vw;
+  background: radial-gradient(
+    ellipse 52% 40% at 50% 50%,
+    color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 35%, #6b4fc9) 0%,
+    transparent 72%
+  );
+  opacity: 0.21;
+  animation: wave-drift-a 50s ease-in-out infinite;
+}
+
+.wave-field__band--left-b {
+  left: -2vw;
+  width: 34vw;
+  background: radial-gradient(
+    ellipse 46% 34% at 50% 50%,
+    color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%, #3f72b0) 0%,
+    transparent 70%
+  );
+  opacity: 0.14;
+  animation: wave-drift-b 63s ease-in-out infinite;
+  animation-delay: -18s;
+}
+
+.wave-field__band--right-a {
+  right: -16vw;
+  background: radial-gradient(
+    ellipse 52% 40% at 50% 50%,
+    color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 35%, #3f72b0) 0%,
+    transparent 72%
+  );
+  opacity: 0.21;
+  animation: wave-drift-a 56s ease-in-out infinite;
+  animation-delay: -9s;
+}
+
+.wave-field__band--right-b {
+  right: -2vw;
+  width: 34vw;
+  background: radial-gradient(
+    ellipse 46% 34% at 50% 50%,
+    color-mix(in srgb, rgb(var(--accent-r), var(--accent-g), var(--accent-b)) 30%, #6b4fc9) 0%,
+    transparent 70%
+  );
+  opacity: 0.14;
+  animation: wave-drift-b 59s ease-in-out infinite;
+  animation-delay: -31s;
+}
+
+@keyframes wave-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(1.5vw, -4vh) scale(1.06);
+  }
+}
+
+@keyframes wave-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-1.2vw, 3.5vh) scale(0.96);
+  }
+}
+
+@media (max-width: 900px) {
+  .wave-field {
+    -webkit-mask-image: radial-gradient(
+      ellipse 55% 58% at 50% 46%,
+      transparent 0%,
+      transparent 26%,
+      black 82%,
+      black 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 55% 58% at 50% 46%,
+      transparent 0%,
+      transparent 26%,
+      black 82%,
+      black 100%
+    );
+  }
+
+  .wave-field__band--left-b,
+  .wave-field__band--right-b {
+    display: none;
+  }
+
+  .wave-field__band--left-a,
+  .wave-field__band--right-a {
+    opacity: 0.14;
+    width: 60vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-field__band {
+    animation: none;
+  }
+}
+
 /* Living Fiber Ambience — karanlığın içinde gerçekten dolaşan, tek
    parça bir neon yılan/fiber hattı (bkz. src/components/FiberAmbience.jsx).
    Baş/gövde/kuyruk sistemi tek bir full-screen <canvas> üzerinde elle
