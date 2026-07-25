@@ -474,6 +474,190 @@ body.modal-open .case-backdrop a {
 }
 
 /* -------------------------------------------------------- */
+/* Discovery layer — Surprise Me + "R" ipucu                  */
+/* -------------------------------------------------------- */
+/* editorial-hint'in ("Good work takes curiosity.") tam kaybolmasından
+   sonra bir kez beliren, oturum başına tek seferlik ikinci fısıltı
+   (bkz. App.jsx SURPRISE_HINT_*). Aynı sakin kayıt, ama mono/sistem
+   hissi versin diye italik serif değil — Surprise Me'nin hemen üstünde,
+   alt-orta negatif alanda. */
+.discovery-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 3.5rem;
+  transform: translateX(-50%);
+  z-index: 15;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: rgba(238, 233, 244, 0.4);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.discovery-layer {
+  position: fixed;
+  left: 50%;
+  bottom: 1.8rem;
+  transform: translateX(-50%);
+  z-index: 20;
+}
+
+/* Ana kahraman değil — sakin bir davet. Neon buton/renkli kutu yok;
+   kontrast ve küçük bir accent detayı yalnızca hover/focus'ta belirir. */
+.surprise-me {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(238, 233, 244, 0.42);
+  transition: color 0.35s ease, transform 0.35s ease;
+}
+
+.surprise-me::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.5rem;
+  width: 0;
+  height: 1px;
+  background: rgb(var(--accent-r), var(--accent-g), var(--accent-b));
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: width 0.35s ease, opacity 0.35s ease;
+}
+
+.surprise-me:hover,
+.surprise-me:focus-visible {
+  color: rgba(238, 233, 244, 0.82);
+  transform: translateY(-1px);
+}
+
+.surprise-me:hover::before,
+.surprise-me:focus-visible::before {
+  width: 22px;
+  opacity: 0.75;
+}
+
+.surprise-me__arrow {
+  display: inline-block;
+  transition: transform 0.35s ease;
+}
+
+.surprise-me:hover .surprise-me__arrow,
+.surprise-me:focus-visible .surprise-me__arrow {
+  transform: translate(1px, -1px);
+}
+
+.surprise-me:focus-visible {
+  outline: 1px solid rgba(238, 233, 244, 0.4);
+  outline-offset: 6px;
+  border-radius: 2px;
+}
+
+/* -------------------------------------------------------- */
+/* Project Hover Peek                                         */
+/* -------------------------------------------------------- */
+/* Hover edilen proje adının konumunu takip ETMEZ — sabit, bağlama göre
+   seçilen üç "güvenli alan"dan birinde belirir (bkz. lib/discovery.js
+   pickPeekZone). pointer-events: none — hiçbir tıklamayı yakalamaz,
+   dekoratif olduğu için aria-hidden. */
+.project-peek {
+  position: fixed;
+  z-index: 22;
+  width: min(300px, 24vw + 130px);
+  pointer-events: none;
+  background: rgba(5, 3, 8, 0.66);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(238, 233, 244, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
+}
+
+.project-peek--top-right {
+  top: 6.5rem;
+  right: 1.8rem;
+}
+
+.project-peek--mid-right {
+  top: 50%;
+  right: 1.8rem;
+  transform: translateY(-50%);
+}
+
+.project-peek--bottom-left {
+  bottom: 6.5rem;
+  left: 172px;
+}
+
+.project-peek__media {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.project-peek__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.project-peek__meta {
+  padding: 0.85rem 0.95rem 0.95rem;
+}
+
+.project-peek__title {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: rgba(238, 233, 244, 0.92);
+  padding-bottom: 0.55rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(var(--peek-accent-rgb, 155, 77, 255), 0.35);
+}
+
+.project-peek__facts {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.04em;
+  color: rgb(var(--peek-accent-rgb, 155, 77, 255));
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surprise-me,
+  .surprise-me::before,
+  .surprise-me__arrow {
+    transition: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .project-peek {
+    display: none;
+  }
+
+  .discovery-hint {
+    bottom: 3rem;
+    font-size: 0.62rem;
+  }
+
+  .discovery-layer {
+    bottom: 1.4rem;
+  }
+}
+
+/* -------------------------------------------------------- */
 /* Project cloud                                              */
 /* -------------------------------------------------------- */
 .stage {
