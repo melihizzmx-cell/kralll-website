@@ -990,6 +990,11 @@ body.modal-open .case-backdrop a {
   .playground-play {
     transition: none;
   }
+
+  .daily-signal::before,
+  .daily-signal__divider {
+    animation: none !important;
+  }
 }
 
 @media (max-width: 900px) {
@@ -1392,6 +1397,177 @@ body.modal-open .case-backdrop a {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   color: var(--text-dim);
+}
+
+/* -------------------------------------------------------- */
+/* Not Defteri — Daily Signal                                 */
+/* -------------------------------------------------------- */
+/* Yalnızca sectionId==="notlar" iken kullanılır (bkz.
+   DailySignalContent.jsx). --daily-rgb, o gün üretilen sinyalin rengi
+   varsa bileşenin kendi kök elemanında inline set edilir ve yalnızca
+   aşağıdaki birkaç ince yüzeyde (tarih/eyebrow, signal no, ayırıcı,
+   kelime glow'u, ambient glow) kullanılır — panelin geneli boyanmaz.
+   Renk yoksa (tüm colors havuzu boşsa) --panel-accent-rgb'ye, o da
+   yoksa notlar'ın statik sidebarSections tonuna düşer. */
+.daily-signal {
+  position: relative;
+  padding-top: 0.1rem;
+}
+
+.daily-signal::before {
+  content: "";
+  position: absolute;
+  top: -24px;
+  left: -28px;
+  width: 170px;
+  height: 170px;
+  background: radial-gradient(circle, rgba(var(--daily-rgb, var(--panel-accent-rgb, 201, 151, 62)), 0.16), transparent 70%);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.daily-signal__date {
+  color: rgb(var(--daily-rgb, var(--panel-accent-rgb, 201, 151, 62)));
+}
+
+.daily-signal__number {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(var(--daily-rgb, var(--panel-accent-rgb, 201, 151, 62)));
+  opacity: 0.92;
+  margin-top: 0.3rem;
+}
+
+.daily-signal__divider {
+  width: 40px;
+  height: 1px;
+  margin: 1.5rem 0 1.7rem;
+  background: rgba(var(--daily-rgb, var(--panel-accent-rgb, 201, 151, 62)), 0.5);
+}
+
+.daily-signal__word {
+  color: var(--text-main);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 32px rgba(var(--daily-rgb, var(--panel-accent-rgb, 201, 151, 62)), 0.22);
+}
+
+.daily-signal__word--rare {
+  color: rgb(var(--daily-rgb, var(--panel-accent-rgb, 201, 151, 62)));
+}
+
+.daily-signal__frequency {
+  margin-top: 0.3rem;
+}
+
+.daily-signal__frequency-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+
+.daily-signal__line {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(238, 233, 244, 0.85);
+  margin: 0;
+  max-width: 34ch;
+}
+
+.daily-signal__song {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding-bottom: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: rgba(238, 233, 244, 0.6);
+  border-bottom: 1px solid rgba(var(--daily-rgb, var(--panel-accent-rgb, 201, 151, 62)), 0.35);
+}
+
+.daily-signal__song-title {
+  color: var(--text-main);
+}
+
+.daily-signal__image {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 1.5rem;
+  border-radius: 2px;
+  opacity: 0.92;
+}
+
+.daily-signal__rare-media img {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 1rem;
+  border-radius: 2px;
+  opacity: 0.85;
+}
+
+.daily-signal__caption {
+  margin-top: 2.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.03em;
+  color: var(--text-dim);
+  opacity: 0.7;
+}
+
+/* 5 izin verilen motionVariant — hepsi düşük yoğunluklu, yalnızca ambient
+   glow'u veya ayırıcıyı hareket ettirir, metni değil. "static" bilinçli
+   olarak animasyonsuzdur. */
+.daily-signal--motion-drift::before {
+  animation: daily-signal-drift 16s ease-in-out infinite;
+}
+
+.daily-signal--motion-pulse::before {
+  animation: daily-signal-pulse 6s ease-in-out infinite;
+}
+
+.daily-signal--motion-vertical::before {
+  animation: daily-signal-vertical 11s ease-in-out infinite;
+}
+
+.daily-signal--motion-wave .daily-signal__divider {
+  animation: daily-signal-wave 8s ease-in-out infinite;
+  transform-origin: left center;
+}
+
+@keyframes daily-signal-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(10px, -8px); }
+}
+
+@keyframes daily-signal-pulse {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+@keyframes daily-signal-vertical {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes daily-signal-wave {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(1.35); }
+}
+
+@media (max-width: 900px) {
+  .daily-signal__line {
+    max-width: none;
+  }
 }
 
 /* -------------------------------------------------------- */

@@ -6,6 +6,7 @@ import { sidebarSections } from "../data/sidebarSections"
 import { hexToRgb, setPanelAccentOverride } from "../context/ThemeEngine"
 import AboutPanelContent from "./AboutPanelContent"
 import ContactPanelContent from "./ContactPanelContent"
+import DailySignalContent from "./DailySignalContent"
 import EdgeGlow from "./EdgeGlow"
 
 export default function SectionPanel({ sectionId, onClose, onNavigate }) {
@@ -85,6 +86,8 @@ export default function SectionPanel({ sectionId, onClose, onNavigate }) {
               <AboutPanelContent data={data} onOpenContact={onNavigate} scrollRootRef={panelScrollRef} />
             ) : sectionId === "iletisim" ? (
               <ContactPanelContent data={data} />
+            ) : sectionId === "notlar" ? (
+              <DailySignalContent />
             ) : (
               <>
                 <span className="modal-eyebrow" lang={data.eyebrowLang}>
