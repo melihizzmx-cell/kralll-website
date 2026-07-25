@@ -3,6 +3,7 @@ import { motion } from "framer-motion"
 import { MouseProvider } from "./context/MouseContext"
 import ThemeEngine from "./context/ThemeEngine"
 import CursorGlow from "./components/CursorGlow"
+import WaveField from "./components/WaveField"
 import FiberAmbience from "./components/FiberAmbience"
 import Sidebar from "./components/Sidebar"
 import CategoryCloud from "./components/CategoryCloud"
@@ -170,6 +171,7 @@ export default function App() {
       <ThemeEngine />
       <div className="app">
         <div className="bg-vignette" aria-hidden="true" />
+        <WaveField />
         <FiberAmbience paused={!!selectedProject || activeSection !== "isler"} />
         <div className="bg-grid" aria-hidden="true" />
         <div className="bg-noise" aria-hidden="true" />
